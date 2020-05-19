@@ -7,8 +7,10 @@
   </head>
 
   <body>
-    {% include 'nav.html' %}
-    {% include 'header.html' %}
+    <header>
+      {% include 'nav.html' %}
+      {% include 'header.html' %}
+    </header>
     {% block content %} {% endblock %}
     {% include 'footer.html' %}
   </body>

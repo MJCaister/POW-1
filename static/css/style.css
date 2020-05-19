@@ -2,6 +2,43 @@ html {
   background-color: #F7F7F7;
 }
 
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  color: #726D52;
+  text-align: center;
+}
+
+nav {
+  padding-top: 15px;
+}
+
+.POWHome {
+  width: 80%;
+  padding-left: 10%;
+  padding-bottom: 20px;
+}
+
+.POWHome img {
+  width: 100%;
+}
+h1 {
+  color: inherit;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
 li {
   display: inline;
+  padding-left: 8px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
