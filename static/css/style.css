@@ -47,6 +47,12 @@ nav {
 
 .coloum {
   width: 33%;
+  float: left;
+}
+
+.coloum p {
+  width: 70%;
+  padding-left: 15%;
 }
 
 h1 {
