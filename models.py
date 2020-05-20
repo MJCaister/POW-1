@@ -18,10 +18,10 @@ class Capture(db.Model):
 
 
 
-t_Get Distinct Values for fixing data = db.Table(
-    'Get Distinct Values for fixing data',
-    db.Column('capture', db.Text)
-)
+#t_Get Distinct Values for fixing data = db.Table(
+#    'Get Distinct Values for fixing data',
+#    db.Column('capture', db.Text)
+#)
 
 
 
@@ -68,8 +68,8 @@ class Unit(db.Model):
 
 
 
-t_sqlite_sequence = db.Table(
-    'sqlite_sequence',
-    db.Column('name', db.NullType),
-    db.Column('seq', db.NullType)
-)
+#t_sqlite_sequence = db.Table(
+#    'sqlite_sequence',
+#    db.Column('name', db.NullType),
+#    db.Column('seq', db.NullType)
+#)
