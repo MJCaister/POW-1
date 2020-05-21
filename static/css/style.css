@@ -55,6 +55,12 @@ nav {
   padding-left: 15%;
 }
 
+.alphabet {
+  color: #D9B68C;
+  padding-top: 15px;
+  font-size: 35px;
+}
+
 h1 {
   color: inherit;
   font-size: 50px;

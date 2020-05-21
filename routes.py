@@ -26,5 +26,13 @@ def about():
 def search():
     return render_template("records.html")
 
+@app.route('/browse')
+def browse():
+    return render_template("browse.html")
+
+@app.route('/results/<val>')
+def results(val):
+    return render_template("results.html", val=val)
+
 if __name__ == "__main__":
     app.run(debug=True)
