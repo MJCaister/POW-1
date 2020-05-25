@@ -28,12 +28,19 @@ def search():
 
 @app.route('/browse')
 def browse():
+    #pows = models.Prisoner.query.all()
     return render_template("browse.html")
+
+@app.route('/pow/<int:val>')
+def pow(val):
+    pow = models.Prisoner.query.filter_by(id=val).first()
+    surname = pow.surname
+    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname)
 
 @app.route('/results/<val>')
 def results(val):
-    pows = "testing lol"
-    return render_template("results.html", val=val, prisoners=pows)
+    pows = models.Prisoner.query.filter(models.Prisoner.surname.ilike('{}%'.format(val))).all()
+    return render_template("results.html",val=val, prisoners=pows)
 
 if __name__ == "__main__":
     app.run(debug=True)

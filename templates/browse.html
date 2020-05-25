@@ -29,4 +29,10 @@
 <a href="/results/y">Y</a>
 <a href="/results/z">Z</a>
 </div>
+
+<h3>All Records</h3>
+{% for pow in prisoners %}
+<p>{{ pow.surname }}</p>
+{% endfor %}
+
 {% endblock %}
