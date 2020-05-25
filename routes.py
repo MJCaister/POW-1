@@ -32,7 +32,8 @@ def browse():
 
 @app.route('/results/<val>')
 def results(val):
-    return render_template("results.html", val=val)
+    pows = "testing lol"
+    return render_template("results.html", val=val, prisoners=pows)
 
 if __name__ == "__main__":
     app.run(debug=True)
