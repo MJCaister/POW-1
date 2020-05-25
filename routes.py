@@ -35,7 +35,8 @@ def browse():
 def pow(val):
     pow = models.Prisoner.query.filter_by(id=val).first()
     surname = pow.surname
-    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname)
+    rank = models.Rank.query.filter_by(id=pow.rank).first()
+    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, rank=rank)
 
 @app.route('/results/<val>')
 def results(val):
