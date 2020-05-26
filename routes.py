@@ -36,12 +36,25 @@ def pow(val):
     pow = models.Prisoner.query.filter_by(id=val).first()
     surname = pow.surname
     rank = models.Rank.query.filter_by(id=pow.rank).first()
-    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, rank=rank)
+    capture = models.Capture.query.filter_by(id=pow.capture).first()
+    if capture.date == "Greece":
+        inor = "in"
+    elif capture.date == "Crete":
+        inor = "in"
+    elif capture.date == "Greece/Crete":
+        inor = "in"
+    else:
+        inor = "on"
+    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, rank=rank, capture=capture, inor=inor, unit="test")
 
 @app.route('/results/<val>')
 def results(val):
+    #will have to add try except for search use
     pows = models.Prisoner.query.filter(models.Prisoner.surname.ilike('{}%'.format(val))).all()
-    return render_template("results.html",val=val, prisoners=pows)
+    pows1 = pows[::3]
+    pows2 = pows[1::3]
+    pows3 = pows[2::3]
+    return render_template("results.html",val=val, prisoners1=pows1, prisoners2=pows2, prisoners3=pows3)
 
 if __name__ == "__main__":
     app.run(debug=True)

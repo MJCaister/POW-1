@@ -3,7 +3,36 @@
 
 <h2><span>Showing results for {{val[0]}}</span></h2>
 
-{% for pow in prisoners %}
-<p><a href="/pow/{{ pow.id }}">{{ pow.initial }}. {{ pow.surname }}</a></p>
-{% endfor %}
+<div class="row">
+  <div class="coloum">
+    <table>
+      {% for pow in prisoners1 %}
+      <tr>
+        <td><a href="/pow/{{ pow.id }}">{{pow.service_number}} - {{pow.initial}}. {{pow.surname}}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="coloum">
+    <table>
+      {% for pow in prisoners2 %}
+      <tr>
+        <td><a href="/pow/{{ pow.id }}">{{pow.service_number}} - {{pow.initial}}. {{pow.surname}}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="coloum">
+    <table>
+      {% for pow in prisoners3 %}
+      <tr>
+        <td><a href="/pow/{{ pow.id }}">{{pow.service_number}} - {{pow.initial}}. {{pow.surname}}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+
+
 {% endblock %}
