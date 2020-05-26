@@ -89,9 +89,17 @@ h2 span {
     background-color: #F7F7F7;
 }
 
+h3 {
+  font-size: 25px;
+}
+
+table {
+  padding-top: 30px;
+}
+
 table td{
-  border: 1px solid black;
-  border-collapse: collapse;
+  border-bottom: 2px solid #D9B68C;
+  border-right: 2px solid #D9B68C;
   text-align: left;
 }
 

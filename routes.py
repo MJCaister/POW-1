@@ -14,13 +14,19 @@ db = SQLAlchemy(app)
 
 import models
 
+def countpows():
+    count = models.Prisoner.query.filter().count()
+    return count
+
 @app.route('/')
 def home():
-    return render_template("home.html")
+    count = countpows()
+    return render_template("home.html",number=count)
 
 @app.route('/about')
 def about():
-    return render_template("about.html")
+    count = countpows()
+    return render_template("about.html", number=count)
 
 @app.route('/records')
 def search():
@@ -51,10 +57,13 @@ def pow(val):
 def results(val):
     #will have to add try except for search use
     pows = models.Prisoner.query.filter(models.Prisoner.surname.ilike('{}%'.format(val))).all()
+    #For better display of results I split the results over 3 tables. For resizing purposes it also returns all results incase screen size is too small for 3 table display
     pows1 = pows[::3]
     pows2 = pows[1::3]
     pows3 = pows[2::3]
     return render_template("results.html",val=val, prisoners1=pows1, prisoners2=pows2, prisoners3=pows3)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
