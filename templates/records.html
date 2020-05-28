@@ -1,6 +1,11 @@
 {% extends 'layout.html' %}
 {% block content %}
 <h2><span>Search For Soldier</span></h2>
+<form action= /results method="POST">
+  <label for="userinput">Input for Search:</label>
+  <input type="text" name="userinput" id="userinput" size="15"/>
+  <input type="submit" name="submit" id="submit"/>
+</form>
 
 <h3><a href="/browse">Select To Browse Records</a></h3>
 {% endblock %}

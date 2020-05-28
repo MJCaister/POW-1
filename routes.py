@@ -18,6 +18,8 @@ def countpows():
     count = models.Prisoner.query.filter().count()
     return count
 
+#add function to easily get unit, rank and capture for pows
+
 @app.route('/')
 def home():
     count = countpows()
@@ -28,7 +30,7 @@ def about():
     count = countpows()
     return render_template("about.html", number=count)
 
-@app.route('/records')
+@app.route('/records', methods=['POST'])
 def search():
     return render_template("records.html")
 
@@ -39,7 +41,8 @@ def browse():
 
 @app.route('/pow/<int:val>')
 def pow(val):
-    pow = models.Prisoner.query.filter_by(id=val).first()
+    pow = models.Prisoner.query.filter_by(id=val).first_or_404()
+    unit = "test"
     surname = pow.surname
     rank = models.Rank.query.filter_by(id=pow.rank).first()
     capture = models.Capture.query.filter_by(id=pow.capture).first()
@@ -51,7 +54,11 @@ def pow(val):
         inor = "in"
     else:
         inor = "on"
-    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, rank=rank, capture=capture, inor=inor, unit="test")
+    #unit = models.Unit.query.join(PrisonerUnit).join(Prisoner).filter((PrisonerUnit.c.pid == Prisoner.id) & (PrisonerUnit.c.uid == Unit.id)).all()
+    #units = models..query().all()
+    #for unit in units:
+    #    for un in unit.Unit
+    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, rank=rank, capture=capture, inor=inor, unit=unit)
 
 @app.route('/results/<val>')
 def results(val):
@@ -63,7 +70,14 @@ def results(val):
     pows3 = pows[2::3]
     return render_template("results.html",val=val, prisoners1=pows1, prisoners2=pows2, prisoners3=pows3)
 
+@app.route('/search', methods=['POST'])
+def prisonersearch(name):
+    pows = models.Prisoner.query.filter(models.Prisoner.surname.ilike('%{}%'.format(val))).all()
+    return render_template("searchresults.html", powresult=pows)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

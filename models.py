@@ -1,7 +1,7 @@
 # coding: utf-8
 from sqlalchemy import Column, ForeignKey, Integer, Numeric, Table, Text
-from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import NullType
+from sqlalchemy.orm import relationship
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -20,7 +20,7 @@ class Capture(db.Model):
 
 #t_Get Distinct Values for fixing data = db.Table(
 #    'Get Distinct Values for fixing data',
-#    db.Column('capture', db.Text)
+#    db.Column('NULL', db.NullType)
 #)
 
 
@@ -30,12 +30,13 @@ class Prisoner(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     service_number = db.Column(db.Integer, nullable=False)
-    rank = db.Column(db.Text)
+    rank = db.Column(db.ForeignKey('Rank.id'))
     surname = db.Column(db.Text, nullable=False)
     initial = db.Column(db.Text)
-    unit = db.Column(db.Text)
-    capture = db.Column(db.Text)
+    capture = db.Column(db.ForeignKey('Capture.id'))
 
+    Capture = db.relationship('Capture', primaryjoin='Prisoner.capture == Capture.id', backref='prisoners')
+    Rank = db.relationship('Rank', primaryjoin='Prisoner.rank == Rank.id', backref='prisoners')
     Unit = db.relationship('Unit', secondary='PrisonerUnit', backref='prisoners')
 
 
