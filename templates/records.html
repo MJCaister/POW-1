@@ -1,11 +1,8 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h2><span>Search For Soldier</span></h2>
-<form action= /results method="POST">
-  <label for="userinput">Input for Search:</label>
-  <input type="text" name="userinput" id="userinput" size="15"/>
-  <input type="submit" name="submit" id="submit"/>
-</form>
-
+<h2><span>Results for {{query}}</span></h2>
+{% for pow in results %}
+  <p><a href="/pow/{{pow.id}}">{{pow.surname}}</a></p>
+{% endfor %}
 <h3><a href="/browse">Select To Browse Records</a></h3>
 {% endblock %}

@@ -30,9 +30,16 @@ def about():
     count = countpows()
     return render_template("about.html", number=count)
 
+#@app.route('/records')
+#def search():
+#    return render_template("records.html")
+
+# Return a search result from the form shown on every page (page_title.html)
 @app.route('/records', methods=['POST'])
 def search():
-    return render_template("records.html")
+    form = SearchForm()
+    results = models.Prisoner.query.filter(models.Prisoner.surname.ilike('%{}%'.format(form.query.data))).all()
+    return render_template('records.html', title='Search', results=results, query=form.query.data)
 
 @app.route('/browse')
 def browse():
@@ -70,10 +77,11 @@ def results(val):
     pows3 = pows[2::3]
     return render_template("results.html",val=val, prisoners1=pows1, prisoners2=pows2, prisoners3=pows3)
 
-@app.route('/search', methods=['POST'])
-def prisonersearch(name):
-    pows = models.Prisoner.query.filter(models.Prisoner.surname.ilike('%{}%'.format(val))).all()
-    return render_template("searchresults.html", powresult=pows)
+# inject search form (flask-wtf) into all pages
+@app.context_processor
+def inject_search():
+    searchform = SearchForm()
+    return dict(searchform=searchform)
 
 @app.errorhandler(404)
 def page_not_found(e):

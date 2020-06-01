@@ -2,6 +2,12 @@
   <ul>
     <li><a href="/">Home</a></li>
     <li><a href="/about">About</a></li>
-    <li><a href="/records">Search</a></li>
+    <li><a href="/browse">Search</a></li>
   </ul>
+  <div class="searchWrapper">
+     <form method="POST" action={{ url_for('search') }}>
+         {{ searchform.csrf_token }}
+         {{ searchform.query }}{{ searchform.submit }}
+     </form>
+   </div>
 </nav>
