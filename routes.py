@@ -49,23 +49,32 @@ def browse():
 @app.route('/pow/<int:val>')
 def pow(val):
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
-    unit = "test"
+    unit = pow.Unit.name
+    #unit = models.Prisoner.query.join(PrisonerUnit).filter(models.Prisoner.id == models.PrisonerUnit.pid).join(Unit).filter(models.PrisonerUnit.uid == models.Unit.id).filter_by(Prisoner.id == '1').all()
+    #get working!!
     surname = pow.surname
-    rank = models.Rank.query.filter_by(id=pow.rank).first()
-    capture = models.Capture.query.filter_by(id=pow.capture).first()
+    #rank = models.Rank.query.filter_by(id=pow.rank).first()
+    rank = pow.Rank
+    #capture = models.Capture.query.filter_by(id=pow.capture).first()
+    capture = pow.Capture
+    count = models.Prisoner.query.filter(models.Prisoner.capture == capture.id).count()
     if capture.date == "Greece":
         inor = "in"
+        sent = "at this location"
     elif capture.date == "Crete":
         inor = "in"
+        sent = "at this location"
     elif capture.date == "Greece/Crete":
         inor = "in"
+        sent = "at this location"
     else:
         inor = "on"
+        sent = "on this date"
     #unit = models.Unit.query.join(PrisonerUnit).join(Prisoner).filter((PrisonerUnit.c.pid == Prisoner.id) & (PrisonerUnit.c.uid == Unit.id)).all()
     #units = models..query().all()
     #for unit in units:
     #    for un in unit.Unit
-    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, rank=rank, capture=capture, inor=inor, unit=unit)
+    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, rank=rank, capture=capture, inor=inor, unit=unit, sent=sent, count=count)
 
 @app.route('/results/<val>')
 def results(val):
@@ -75,6 +84,7 @@ def results(val):
     pows1 = pows[::3]
     pows2 = pows[1::3]
     pows3 = pows[2::3]
+    val = val.upper()
     return render_template("results.html",val=val, prisoners1=pows1, prisoners2=pows2, prisoners3=pows3)
 
 # inject search form (flask-wtf) into all pages

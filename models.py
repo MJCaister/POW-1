@@ -37,11 +37,11 @@ class Prisoner(db.Model):
 
     Capture = db.relationship('Capture', primaryjoin='Prisoner.capture == Capture.id', backref='prisoners')
     Rank = db.relationship('Rank', primaryjoin='Prisoner.rank == Rank.id', backref='prisoners')
-    Unit = db.relationship('Unit', secondary='PrisonerUnit', backref='prisoners')
+    Unit = db.relationship('Unit', secondary= 'PrisonerUnit', backref="prisoners")
 
 
 
-t_PrisonerUnit = db.Table(
+PrisonerUnit = db.Table(
     'PrisonerUnit',
     db.Column('pid', db.ForeignKey('Prisoner.id')),
     db.Column('uid', db.ForeignKey('Unit.id'))
