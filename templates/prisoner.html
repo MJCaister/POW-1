@@ -3,7 +3,10 @@
 <h2><span>{{ rank.initial }}. {{ prisoner.surname }}</span></h2>
 <div class="row">
   <div class="powphoto">
-    <table>
+    <table
+    <tr>
+      <td>Service Number: {{prisoner.service_number}}</td>
+    </tr>
       <tr>
         <td><a href="/rank/{{rank.idl}}">Rank: {{rank.name}}</a></td>
       </tr>
@@ -16,7 +19,11 @@
     </table>
   </div>
   <div class="powtext">
-    <p>{{rank.name}} {{prisoner.initial}}. {{prisoner.surname}} was captured {{inor}} {{capture.date}}</p>
+    <p>{{rank.name}} {{prisoner.initial}}. {{prisoner.surname}} was captured {{inor}}
+      {{capture.date}}. {{prisoner.surname}} servied in the {{unit}} of the 2NZEF, and was taken as a prisoner along with {{count}} other men {{sent}}.<br></p>
   </div>
+  <h3>Rank.</h3>
+  <h3>Unit.</h3>
+  <h3>Capture.</h3>
 </div>
 {% endblock %}

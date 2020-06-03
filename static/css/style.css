@@ -45,6 +45,11 @@ nav {
   display: inline;
 }
 
+.row p {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
 .coloum {
   width: 33%;
   float: left;
@@ -55,6 +60,20 @@ nav {
   padding-left: 15%;
 }
 
+.aboutphoto {
+  width: 30%;
+  float: left;
+}
+
+.aboutphoto img {
+  width: 100%;
+}
+
+.abouttext {
+  width: 70%;
+  float: left;
+}
+
 .alphabet {
   color: #D9B68C;
   padding-top: 15px;
@@ -63,10 +82,16 @@ nav {
 
 .powphoto {
   width: 25%;
+  float: left;
 }
 
 .powtext {
   width: 75%;
+  float: left;
+}
+
+.powtext p {
+  padding: 0;
 }
 
 h1 {
@@ -98,8 +123,6 @@ table {
 }
 
 table td{
-  border-bottom: 2px solid #D9B68C;
-  border-right: 2px solid #D9B68C;
   text-align: left;
 }
 
