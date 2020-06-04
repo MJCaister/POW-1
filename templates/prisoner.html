@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h2><span>{{ rank.initial }}. {{ prisoner.surname }}</span></h2>
+<h2><span>{{ prisoner.Rank.initial }}. {{ prisoner.surname }}</span></h2>
 <div class="row">
   <div class="powphoto">
     <table
@@ -8,19 +8,19 @@
       <td>Service Number: {{prisoner.service_number}}</td>
     </tr>
       <tr>
-        <td><a href="/rank/{{rank.idl}}">Rank: {{rank.name}}</a></td>
+        <td><a href="/rank/{{prisoner.Rank.id}}">Rank: {{prisoner.Rank.name}}</a></td>
       </tr>
       <tr>
-        <td><a href="/unit/{{unit}}">Unit: {{unit}}</a></td>
+        <td><a href="/unit">Unit: {% for u in prisoner.units %} {{u.unit.name}} {% endfor %}</a></td>
       </tr>
       <tr>
-        <td><a href="/capture/{{capture.id}}">Capture: {{capture.date}}</a></td>
+        <td><a href="/capture/{{prisoner.Capture.id}}">Capture: {{prisoner.Capture.date}}</a></td>
       </tr>
     </table>
   </div>
   <div class="powtext">
-    <p>{{rank.name}} {{prisoner.initial}}. {{prisoner.surname}} was captured {{inor}}
-      {{capture.date}}. {{prisoner.surname}} servied in the {{unit}} of the 2NZEF, and was taken as a prisoner along with {{count}} other men {{sent}}.<br></p>
+    <p>{{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}} was captured {{inor}}
+      {{prisoner.Capture.date}}. {{prisoner.surname}} servied in the {% for u in prisoner.units %} {{u.unit.name}} {% endfor %}  of the 2NZEF, and was taken as a prisoner along with {{count}} other men {{sent}}.<br></p>
   </div>
   <h3>Rank.</h3>
   <h3>Unit.</h3>

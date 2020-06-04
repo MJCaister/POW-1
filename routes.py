@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 import sqlite3
@@ -30,10 +30,6 @@ def about():
     count = countpows()
     return render_template("about.html", number=count)
 
-#@app.route('/records')
-#def search():
-#    return render_template("records.html")
-
 # Return a search result from the form shown on every page (page_title.html)
 @app.route('/records', methods=['POST'])
 def search():
@@ -49,15 +45,9 @@ def browse():
 @app.route('/pow/<int:val>')
 def pow(val):
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
-    unit = pow.Unit.name
-    #unit = models.Prisoner.query.join(PrisonerUnit).filter(models.Prisoner.id == models.PrisonerUnit.pid).join(Unit).filter(models.PrisonerUnit.uid == models.Unit.id).filter_by(Prisoner.id == '1').all()
-    #get working!!
     surname = pow.surname
-    #rank = models.Rank.query.filter_by(id=pow.rank).first()
-    rank = pow.Rank
-    #capture = models.Capture.query.filter_by(id=pow.capture).first()
     capture = pow.Capture
-    count = models.Prisoner.query.filter(models.Prisoner.capture == capture.id).count()
+    count = models.Prisoner.query.filter(models.Prisoner.capture==capture.id).count()
     if capture.date == "Greece":
         inor = "in"
         sent = "at this location"
@@ -70,11 +60,7 @@ def pow(val):
     else:
         inor = "on"
         sent = "on this date"
-    #unit = models.Unit.query.join(PrisonerUnit).join(Prisoner).filter((PrisonerUnit.c.pid == Prisoner.id) & (PrisonerUnit.c.uid == Unit.id)).all()
-    #units = models..query().all()
-    #for unit in units:
-    #    for un in unit.Unit
-    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, rank=rank, capture=capture, inor=inor, unit=unit, sent=sent, count=count)
+    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count)
 
 @app.route('/results/<val>')
 def results(val):

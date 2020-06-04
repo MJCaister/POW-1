@@ -1,7 +1,7 @@
 # coding: utf-8
 from sqlalchemy import Column, ForeignKey, Integer, Numeric, Table, Text
-from sqlalchemy.sql.sqltypes import NullType
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql.sqltypes import NullType
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -18,13 +18,6 @@ class Capture(db.Model):
 
 
 
-#t_Get Distinct Values for fixing data = db.Table(
-#    'Get Distinct Values for fixing data',
-#    db.Column('NULL', db.NullType)
-#)
-
-
-
 class Prisoner(db.Model):
     __tablename__ = 'Prisoner'
 
@@ -37,15 +30,21 @@ class Prisoner(db.Model):
 
     Capture = db.relationship('Capture', primaryjoin='Prisoner.capture == Capture.id', backref='prisoners')
     Rank = db.relationship('Rank', primaryjoin='Prisoner.rank == Rank.id', backref='prisoners')
-    Unit = db.relationship('Unit', secondary= 'PrisonerUnit', backref="prisoners")
+    units = db.relationship('PrisonerUnit', back_populates='prisoner')
 
 
 
-PrisonerUnit = db.Table(
-    'PrisonerUnit',
-    db.Column('pid', db.ForeignKey('Prisoner.id')),
-    db.Column('uid', db.ForeignKey('Unit.id'))
-)
+class PrisonerUnit(db.Model):
+    __tablename__ = 'PrisonerUnit'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pid = db.Column(db.ForeignKey('Prisoner.id'))
+    uid = db.Column(db.ForeignKey('Unit.id'))
+
+    #prisoners = db.relationship('Prisoner', primaryjoin='PrisonerUnit.pid == Prisoner.id', backref='units_prisoner')
+    #units = db.relationship('Unit', primaryjoin='PrisonerUnit.uid == Unit.id', backref='prisoner_units')
+    prisoner = db.relationship('Prisoner', back_populates="units")
+    unit = db.relationship('Unit', back_populates="prisoners")
 
 
 
@@ -58,7 +57,6 @@ class Rank(db.Model):
     desc = db.Column(db.Text)
 
 
-
 class Unit(db.Model):
     __tablename__ = 'Unit'
 
@@ -67,7 +65,7 @@ class Unit(db.Model):
     desc = db.Column(db.Text)
     photo = db.Column(db.Numeric)
 
-
+    prisoners = db.relationship('PrisonerUnit', back_populates="unit")
 
 #t_sqlite_sequence = db.Table(
 #    'sqlite_sequence',
