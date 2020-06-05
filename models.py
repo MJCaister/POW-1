@@ -41,8 +41,6 @@ class PrisonerUnit(db.Model):
     pid = db.Column(db.ForeignKey('Prisoner.id'))
     uid = db.Column(db.ForeignKey('Unit.id'))
 
-    #prisoners = db.relationship('Prisoner', primaryjoin='PrisonerUnit.pid == Prisoner.id', backref='units_prisoner')
-    #units = db.relationship('Unit', primaryjoin='PrisonerUnit.uid == Unit.id', backref='prisoner_units')
     prisoner = db.relationship('Prisoner', back_populates="units")
     unit = db.relationship('Unit', back_populates="prisoners")
 

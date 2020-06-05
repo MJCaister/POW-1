@@ -18,7 +18,6 @@ def countpows():
     count = models.Prisoner.query.filter().count()
     return count
 
-#add function to easily get unit, rank and capture for pows
 
 @app.route('/')
 def home():
@@ -35,7 +34,10 @@ def about():
 def search():
     form = SearchForm()
     results = models.Prisoner.query.filter(models.Prisoner.surname.ilike('%{}%'.format(form.query.data))).all()
-    return render_template('records.html', title='Search', results=results, query=form.query.data)
+    results1 = results[::3]
+    results2 = results[1::3]
+    results3 = results[2::3]
+    return render_template('results.html', title='Search Results', results=results, val=form.query.data, results1=results1, results2=results2, results3=results3)
 
 @app.route('/browse')
 def browse():
@@ -71,7 +73,7 @@ def results(val):
     pows2 = pows[1::3]
     pows3 = pows[2::3]
     val = val.upper()
-    return render_template("results.html",val=val, prisoners1=pows1, prisoners2=pows2, prisoners3=pows3)
+    return render_template("results.html",val=val, results1=pows1, results2=pows2, results3=pows3)
 
 # inject search form (flask-wtf) into all pages
 @app.context_processor

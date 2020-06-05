@@ -6,7 +6,7 @@
 <div class="row">
   <div class="coloum">
     <table>
-      {% for pow in prisoners1 %}
+      {% for pow in results1 %}
       <tr>
         <td><a href="/pow/{{ pow.id }}">{{pow.service_number}} - {{pow.initial}}. {{pow.surname}}</a></td>
       </tr>
@@ -15,7 +15,7 @@
   </div>
   <div class="coloum">
     <table>
-      {% for pow in prisoners2 %}
+      {% for pow in results2 %}
       <tr>
         <td><a href="/pow/{{ pow.id }}">{{pow.service_number}} - {{pow.initial}}. {{pow.surname}}</a></td>
       </tr>
@@ -24,7 +24,7 @@
   </div>
   <div class="coloum">
     <table>
-      {% for pow in prisoners3 %}
+      {% for pow in results3 %}
       <tr>
         <td><a href="/pow/{{ pow.id }}">{{pow.service_number}} - {{pow.initial}}. {{pow.surname}}</a></td>
       </tr>

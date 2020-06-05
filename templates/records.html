@@ -1,8 +1,0 @@
-{% extends 'layout.html' %}
-{% block content %}
-<h2><span>Results for {{query}}</span></h2>
-{% for pow in results %}
-  <p><a href="/pow/{{pow.id}}">{{pow.service_number}} {{pow.initial}}. {{pow.surname}}</a></p>
-{% endfor %}
-<h3><a href="/browse">Select To Browse Records</a></h3>
-{% endblock %}
