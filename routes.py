@@ -19,6 +19,7 @@ def countpows():
     return count
 
 
+
 @app.route('/')
 def home():
     count = countpows()
@@ -34,10 +35,13 @@ def about():
 def search():
     form = SearchForm()
     results = models.Prisoner.query.filter(models.Prisoner.surname.ilike('%{}%'.format(form.query.data))).all()
-    results1 = results[::3]
-    results2 = results[1::3]
-    results3 = results[2::3]
-    return render_template('results.html', title='Search Results', results=results, val=form.query.data, results1=results1, results2=results2, results3=results3)
+    if len(results) == 0:
+        return render_template("results.html", val=form.query.data, results="No results.")
+    else:
+        results1 = results[::3]
+        results2 = results[1::3]
+        results3 = results[2::3]
+        return render_template('results.html', title='Search Results', val=form.query.data, results1=results1, results2=results2, results3=results3)
 
 @app.route('/browse')
 def browse():
@@ -68,12 +72,15 @@ def pow(val):
 def results(val):
     #will have to add try except for search use
     pows = models.Prisoner.query.filter(models.Prisoner.surname.ilike('{}%'.format(val))).all()
-    #For better display of results I split the results over 3 tables. For resizing purposes it also returns all results incase screen size is too small for 3 table display
-    pows1 = pows[::3]
-    pows2 = pows[1::3]
-    pows3 = pows[2::3]
-    val = val.upper()
-    return render_template("results.html",val=val, results1=pows1, results2=pows2, results3=pows3)
+    if len(pows) == 0:
+        return render_template("results.html", val=val, results="No results.")
+    else:
+        #For better display of results I split the results over 3 tables. For resizing purposes it also returns all results incase screen size is too small for 3 table display
+        pows1 = pows[::3]
+        pows2 = pows[1::3]
+        pows3 = pows[2::3]
+        val = val.upper()
+        return render_template("results.html",val=val, results1=pows1, results2=pows2, results3=pows3)
 
 # inject search form (flask-wtf) into all pages
 @app.context_processor
