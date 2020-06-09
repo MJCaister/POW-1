@@ -10,6 +10,13 @@ header {
 
 nav {
   padding-top: 15px;
+  font-size: 20px;
+}
+
+footer {
+  width: 100%;
+  float: left;
+  padding-top: 15px;
 }
 
 /** Home Page CSS **/
@@ -76,8 +83,8 @@ nav {
 
 .alphabet {
   color: #D9B68C;
-  padding-top: 15px;
-  font-size: 35px;
+  padding-top: 30px;
+  font-size: 40px;
 }
 
 .powphoto {
@@ -140,10 +147,10 @@ li {
 a {
   text-decoration: none;
   color: inherit;
-  font-size: 20px;
+  font-size: inherit;
 }
 
-li a:hover {
+a:hover {
   color: #D9B68C;
 }
 
