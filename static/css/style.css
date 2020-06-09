@@ -127,9 +127,13 @@ h3 {
 
 table {
   padding-top: 30px;
+  padding-left: 20px;
 }
 
-table td{
+th, td{
+  border: 1px solid black;
+  font-size: 20px;
+  padding: 5px;
   text-align: center;
 }
 

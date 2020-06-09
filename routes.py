@@ -18,17 +18,19 @@ def countpows():
     count = models.Prisoner.query.filter().count()
     return count
 
-
-
+#Home page route. Returns count info for the about page snippet
 @app.route('/')
 def home():
     count = countpows()
     return render_template("home.html",number=count)
 
+
+#About Page route, also returns count for the about page data.
 @app.route('/about')
 def about():
     count = countpows()
     return render_template("about.html", number=count)
+
 
 # Return a search result from the form shown on every page (page_title.html)
 @app.route('/records', methods=['POST'])
@@ -38,36 +40,36 @@ def search():
     if len(results) == 0:
         return render_template("results.html", val=form.query.data, results="No results.")
     else:
+        #To achieve the 3 Coloums split of data, results are split through 3 lists
         results1 = results[::3]
         results2 = results[1::3]
         results3 = results[2::3]
         return render_template('results.html', title='Search Results', val=form.query.data, results1=results1, results2=results2, results3=results3)
 
+#Set browse page
 @app.route('/browse')
 def browse():
     #pows = models.Prisoner.query.all()
     return render_template("browse.html")
 
+
+#Induvidual POW info page, catches dynamic url only if int since I'm using ids for links
 @app.route('/pow/<int:val>')
 def pow(val):
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
     surname = pow.surname
     capture = pow.Capture
     count = models.Prisoner.query.filter(models.Prisoner.capture==capture.id).count()
-    if capture.date == "Greece":
-        inor = "in"
-        sent = "at this location"
-    elif capture.date == "Crete":
-        inor = "in"
-        sent = "at this location"
-    elif capture.date == "Greece/Crete":
-        inor = "in"
-        sent = "at this location"
-    else:
+    #grammar for prisoner page
+    if isinstance(capture.date, str) == True:
         inor = "on"
         sent = "on this date"
+    else:
+        inor = "in"
+        sent = "at this location"
     return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count)
 
+#This is called from the browse by letter part of website
 @app.route('/results/<val>')
 def results(val):
     #will have to add try except for search use
@@ -88,6 +90,7 @@ def inject_search():
     searchform = SearchForm()
     return dict(searchform=searchform)
 
+#404 error handler with custom styled page.
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html")
