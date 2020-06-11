@@ -67,18 +67,15 @@ footer {
   padding-left: 15%;
 }
 
-.aboutphoto {
-  width: 30%;
-  float: left;
+/** About Page Styling **/
+.aboutpage {
+  text-align: center;
 }
 
-.aboutphoto img {
-  width: 100%;
-}
-
-.abouttext {
+.aboutpage p {
+  padding-top: 30px;
   width: 70%;
-  float: left;
+  padding-left: 15%;
 }
 
 .alphabet {

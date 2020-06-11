@@ -86,10 +86,11 @@ def results(val):
 
 @app.route('/unit/<int:val>')
 def unitpows(val):
-    units = models.Unit.query.filter_by(id=val).all()
-    r1 = units[::3]
-    r2 = units[1::3]
-    r3 = units[2::3]
+    pris = models.PrisonerUnit.query.filter_by(uid=val).all()
+    pows = pris.prisoner.all()
+    r1 = pows[::3]
+    r2 = pows[1::3]
+    r3 = pows[2::3]
     return render_template("results.html", val="All Units", results1=r1, results2=r2, results3=r3)
 
 # inject search form (flask-wtf) into all pages
