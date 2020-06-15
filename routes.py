@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 import sqlite3
-from forms import SearchForm
+from forms import SearchForm, LoginForm
 
 app=Flask(__name__)
 
@@ -52,6 +52,15 @@ def browse():
     #pows = models.Prisoner.query.all()
     return render_template("browse.html")
 
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash('Login requested for user {}, remember_me={}'.format(
+            form.username.data, form.remember_me.data))
+        return redirect('/')
+    return render_template("login.html", form=form)
 
 #Induvidual POW info page, catches dynamic url only if int since I'm using ids for links
 @app.route('/pow/<int:val>')

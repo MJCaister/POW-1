@@ -122,6 +122,10 @@ h3 {
   font-size: 25px;
 }
 
+form {
+  padding-top: 15px;
+}
+
 table {
   padding-top: 30px;
   padding-left: 20px;
