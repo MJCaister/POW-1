@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
-from forms import SearchForm, LoginForm
+from forms import SearchForm, LoginForm, RegistrationForm
 import models
 
 app=Flask(__name__)
@@ -19,7 +19,7 @@ login.login_view = 'login'
 
 @login.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return models.User.query.get(int(id))
 
 def countpows():
     count = models.Prisoner.query.filter().count()
@@ -82,6 +82,20 @@ def login():
         #hash = generate_password_hash(p)
         #print(check_password_hash(hash, p))
     return render_template("login.html", form=form)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect('/')
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = models.User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
 
 @app.route('/logout')
 def logout():

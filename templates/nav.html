@@ -6,6 +6,7 @@
     <li><a href="/browse">Search</a></li>
     {% if current_user.is_anonymous %}
     <li><a href="/login">Login</a></li>
+    <li><a href="/register">Sign Up</a></li>
     {% else %}
     <li><a href="/logout">Logout</a></li>
     {% endif %}
