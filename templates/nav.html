@@ -1,9 +1,14 @@
+<h4>Welcome {{current_user.username}}</h4>
 <nav>
   <ul>
     <li><a href="/">Home</a></li>
     <li><a href="/about">About</a></li>
     <li><a href="/browse">Search</a></li>
+    {% if current_user.is_anonymous %}
     <li><a href="/login">Login</a></li>
+    {% else %}
+    <li><a href="/logout">Logout</a></li>
+    {% endif %}
   </ul>
   <!-- {% with messages = get_flashed_messages() %}
         {% if messages %}

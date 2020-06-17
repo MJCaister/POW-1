@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
 from forms import SearchForm, LoginForm
+import models
 
 app=Flask(__name__)
 
@@ -11,8 +14,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ajaj'
 
 db = SQLAlchemy(app)
+login = LoginManager(app)
+login.login_view = 'login'
 
-import models
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 def countpows():
     count = models.Prisoner.query.filter().count()
@@ -55,12 +62,31 @@ def browse():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('/'))
     form = LoginForm()
     if form.validate_on_submit():
-        flash('Login requested for user {}, remember_me={}'.format(
-            form.username.data, form.remember_me.data))
+        user = models.User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
         return redirect('/')
+        #flash('Login requested for user {}, remember_me={}'.format(
+        #    form.username.data, form.remember_me.data))
+        #u = models.User(username = "test", email = "16284@burnside.school.nz")
+        #u.set_password('josh')
+        #print(u.check_password('amy'))
+        #print(u.check_password('josh'))
+        #p = form.password.data
+        #hash = generate_password_hash(p)
+        #print(check_password_hash(hash, p))
     return render_template("login.html", form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect('/')
 
 #Induvidual POW info page, catches dynamic url only if int since I'm using ids for links
 @app.route('/pow/<int:val>')
