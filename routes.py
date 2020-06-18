@@ -72,15 +72,6 @@ def login():
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         return redirect('/')
-        #flash('Login requested for user {}, remember_me={}'.format(
-        #    form.username.data, form.remember_me.data))
-        #u = models.User(username = "test", email = "16284@burnside.school.nz")
-        #u.set_password('josh')
-        #print(u.check_password('amy'))
-        #print(u.check_password('josh'))
-        #p = form.password.data
-        #hash = generate_password_hash(p)
-        #print(check_password_hash(hash, p))
     return render_template("login.html", form=form)
 
 @app.route('/register', methods=['GET', 'POST'])

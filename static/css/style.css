@@ -9,8 +9,13 @@ header {
 }
 
 nav {
-  padding-top: 15px;
   font-size: 20px;
+}
+
+nav h4 {
+  text-align: left;
+  font-size: 15px;
+  font-weight: lighter;
 }
 
 footer {
