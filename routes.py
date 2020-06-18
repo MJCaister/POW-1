@@ -57,7 +57,8 @@ def search():
 @app.route('/browse')
 def browse():
     #pows = models.Prisoner.query.all()
-    return render_template("browse.html")
+    form = SearchForm()
+    return render_template("browse.html", searchform=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -134,10 +135,10 @@ def unitpows(val):
     return render_template("results.html", val="All Units", results1=r1, results2=r2, results3=r3)
 
 # inject search form (flask-wtf) into all pages
-@app.context_processor
-def inject_search():
-    searchform = SearchForm()
-    return dict(searchform=searchform)
+#@app.context_processor
+#def inject_search():
+#    searchform = SearchForm()
+#    return dict(searchform=searchform)
 
 #404 error handler with custom styled page.
 @app.errorhandler(404)

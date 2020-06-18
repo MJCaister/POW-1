@@ -1,5 +1,5 @@
 <nav>
-  <h4>Welcome {{current_user.username}} {% if current_user.is_anonymous %}
+  <h4>Welcome {{current_user.username}} | {% if current_user.is_anonymous %}
   <a href="/login">Login</a>/<a href="/register">Sign Up</a>
   {% else %}
   <a href="/logout">Logout</a>
@@ -19,10 +19,4 @@
         </ul>
         {% endif %}
         {% endwith %}
-  <div class="searchWrapper">
-     <form method="POST" action={{ url_for('search') }}>
-         {{ searchform.csrf_token }}
-         {{ searchform.query }}{{ searchform.submit }}
-     </form>
-   </div>
 </nav>
