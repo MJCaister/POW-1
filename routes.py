@@ -56,11 +56,10 @@ def search():
 #Set browse page
 @app.route('/browse')
 def browse():
-    #pows = models.Prisoner.query.all()
     form = SearchForm()
     return render_template("browse.html", searchform=form)
 
-
+#login page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -75,6 +74,7 @@ def login():
         return redirect('/')
     return render_template("login.html", form=form)
 
+# register account page
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -89,6 +89,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
+#logout page. redirects to home
 @app.route('/logout')
 def logout():
     logout_user()
@@ -116,6 +117,7 @@ def pow(val):
         sent = "at this location"
     return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count, form=form, comments=comments)
 
+#to delete a comment on a Prisoner's Page
 @app.route('/delete/<int:val>')
 def deletecomment(val):
     comment = models.Comment.query.filter(models.Comment.id==val).first_or_404()
@@ -139,6 +141,7 @@ def results(val):
         val = val.upper()
         return render_template("results.html",val=val, results1=pows1, results2=pows2, results3=pows3)
 
+#Browse Prisoners by Each Unit
 @app.route('/unit/<int:val>')
 def unitpows(val):
     pris = models.PrisonerUnit.query.filter_by(uid=val).all()
@@ -147,12 +150,6 @@ def unitpows(val):
     r2 = pows[1::3]
     r3 = pows[2::3]
     return render_template("results.html", val="All Units", results1=r1, results2=r2, results3=r3)
-
-# inject search form (flask-wtf) into all pages
-#@app.context_processor
-#def inject_search():
-#    searchform = SearchForm()
-#    return dict(searchform=searchform)
 
 #404 error handler with custom styled page.
 @app.errorhandler(404)

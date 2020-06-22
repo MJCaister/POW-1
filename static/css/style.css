@@ -2,6 +2,8 @@ html {
   background-color: #F7F7F7;
 }
 
+/** Template HTML **/
+
 header {
   color: #726D52;
   text-align: center;
@@ -62,6 +64,7 @@ footer {
   padding-right: 10%;
 }
 
+/** Prisoner Page styling**/
 .halfsplit {
   width: 50%;
   float: left;
@@ -96,6 +99,8 @@ footer {
   padding-left: 15%;
 }
 
+
+/** Search Page Styling **/
 .searchWrapper {
   padding-bottom: 30px;
 }
@@ -119,6 +124,8 @@ footer {
 .powtext p {
   padding: 20px;
 }
+
+/** General Styling **/
 
 h1 {
   color: inherit;
