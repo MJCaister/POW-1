@@ -62,6 +62,19 @@ footer {
   padding-right: 10%;
 }
 
+.halfsplit {
+  width: 50%;
+  float: left;
+}
+
+.halfsplit p {
+  text-align: left;
+}
+
+.halfsplit input[type=text] {
+  padding: 15px;
+}
+
 .coloum {
   width: 33%;
   float: left;

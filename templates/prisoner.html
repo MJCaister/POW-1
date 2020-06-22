@@ -41,22 +41,31 @@
 <p>{{prisoner.Capture.desc}}</p>
 
 <h3>Comments</h3>
-{% if current_user.is_anonymous %}
-<p>To comment on a Prisoner's profile you need to login in. <a href="/login">Click Here to Login!</a></p>
-{% elif current_user.is_authenticated %}
-<p>Enter Comment Below</p>
-<form action="" method="post">
-  {{ form.hidden_tag() }}
-  <p>{{ form.comment.label }}<br>
-  {{ form.comment(size=100) }}<br>
-  {% for error in form.comment.errors %}
-  <span style="color: red;">[{{ error }}]</span>
+<div class="row">
+  <div class="halfsplit">
+    {% if current_user.is_anonymous %}
+    <p>To comment on a Prisoner's profile you need to login in. <a href="/login">Click Here to Login!</a></p>
+    {% elif current_user.is_authenticated %}
+    <form action="" method="post">
+      {{ form.hidden_tag() }}
+      <p>{{ form.comment.label }}<br>
+      {{ form.comment(size=100) }}<br>
+      {% for error in form.comment.errors %}
+      <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+      </p>
+      <p>{{ form.submit() }}</p>
+    </form>
+    {% endif %}
+  </div>
+<div class="halfsplit">
+  <table>
+  {% for c in comments %}
+    <tr>
+      <p>{{c.User.username}}: {{c.comment}}{% if current_user.username == c.User.username %} - Delete{% endif %}</p>
+    </tr>
   {% endfor %}
-  </p>
-  <p>{{ form.submit() }}</p>
-</form>
-{% endif %}
-{% for c in comments %}
-<p>{{c.User.username}}: {{c.comment}}</p>
-{% endfor %}
+  </table>
+</div>
+</div>
 {% endblock %}

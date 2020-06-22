@@ -116,6 +116,14 @@ def pow(val):
         sent = "at this location"
     return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count, form=form, comments=comments)
 
+@app.route('/delete/<int:val>')
+def deletecomment(val):
+    comment = models.Comment.query.filter(models.Comment.id==val).first_or_404()
+    pow = comment.powid
+    #db.session.delete(comment)
+    #db.session.commit()
+    return redirect('/pow/{}'.format(pow))
+
 #This is called from the browse by letter part of website
 @app.route('/results/<val>')
 def results(val):
