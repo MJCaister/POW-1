@@ -81,6 +81,16 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+class Comment(db.Model):
+    __tablename__ = 'Comment'
+
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.String(500))
+    userid = db.Column(db.ForeignKey('User.id'))
+    powid = db.Column(db.ForeignKey('Prisoner.id'))
+
+    User = db.relationship('User', primaryjoin='Comment.userid == User.id', backref='comments')
+
 #t_sqlite_sequence = db.Table(
 #    'sqlite_sequence',
 #    db.Column('name', db.NullType),

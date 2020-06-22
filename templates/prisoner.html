@@ -27,16 +27,36 @@
       Expeditionary Force (2NZEF). Unfortunately {{inor}} {{prisoner.Capture.date}} he was
       captured along with {{count}} other soldiers {{sent}}.<br></p>
   </div>
-  <h3>Rank.</h3>
-  <p>{{prisoner.Rank.name}}</p>
-  <p>{{prisoner.Rank.desc}}</p>
-  <h3>Unit.</h3>
-  {% for u in prisoner.units %}
-  <p>{{u.unit.name}}</p>
-  <p>{{u.unit.desc}}</p>
-  {% endfor %}
-  <h3>Capture.</h3>
-  <p>{{prisoner.Capture.date}}</p>
-  <p>{{prisoner.Capture.desc}}</p>
 </div>
+<h3>Rank.</h3>
+<p>{{prisoner.Rank.name}}</p>
+<p>{{prisoner.Rank.desc}}</p>
+<h3>Unit.</h3>
+{% for u in prisoner.units %}
+<p>{{u.unit.name}}</p>
+<p>{{u.unit.desc}}</p>
+{% endfor %}
+<h3>Capture.</h3>
+<p>{{prisoner.Capture.date}}</p>
+<p>{{prisoner.Capture.desc}}</p>
+
+<h3>Comments</h3>
+{% if current_user.is_anonymous %}
+<p>To comment on a Prisoner's profile you need to login in. <a href="/login">Click Here to Login!</a></p>
+{% elif current_user.is_authenticated %}
+<p>Enter Comment Below</p>
+<form action="" method="post">
+  {{ form.hidden_tag() }}
+  <p>{{ form.comment.label }}<br>
+  {{ form.comment(size=100) }}<br>
+  {% for error in form.comment.errors %}
+  <span style="color: red;">[{{ error }}]</span>
+  {% endfor %}
+  </p>
+  <p>{{ form.submit() }}</p>
+</form>
+{% endif %}
+{% for c in comments %}
+<p>{{c.User.username}}: {{c.comment}}</p>
+{% endfor %}
 {% endblock %}

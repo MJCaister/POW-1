@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
-from forms import SearchForm, LoginForm, RegistrationForm
+from forms import SearchForm, LoginForm, RegistrationForm, CommentForm
 import models
 
 app=Flask(__name__)
@@ -95,8 +95,14 @@ def logout():
     return redirect('/')
 
 #Induvidual POW info page, catches dynamic url only if int since I'm using ids for links
-@app.route('/pow/<int:val>')
+@app.route('/pow/<int:val>', methods=['GET', 'POST'])
 def pow(val):
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = models.Comment(comment=form.comment.data ,userid=current_user.id, powid=val)
+        db.session.add(comment)
+        db.session.commit()
+    comments = models.Comment.query.filter(models.Comment.powid==val).all()
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
     surname = pow.surname
     capture = pow.Capture
@@ -108,7 +114,7 @@ def pow(val):
     else:
         inor = "in"
         sent = "at this location"
-    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count)
+    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count, form=form, comments=comments)
 
 #This is called from the browse by letter part of website
 @app.route('/results/<val>')

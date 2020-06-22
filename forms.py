@@ -3,6 +3,10 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 import models
 
+class CommentForm(FlaskForm):
+    comment = StringField('Comment', validators=[DataRequired()])
+    submit = SubmitField("Post Comment")
+
 class SearchForm(FlaskForm):
     query = StringField('query', validators=[DataRequired()])
     submit = SubmitField('🔍')
