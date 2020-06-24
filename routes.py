@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
-from forms import SearchForm, LoginForm, RegistrationForm, CommentForm
+from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm
 import models
 
 app=Flask(__name__)
@@ -104,6 +104,9 @@ def pow(val):
         db.session.add(comment)
         db.session.commit()
     comments = models.Comment.query.filter(models.Comment.powid==val).all()
+    deleteform = DeleteForm()
+    if deleteform.validate_on_submit():
+        return redirect('/')
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
     surname = pow.surname
     capture = pow.Capture
@@ -115,16 +118,7 @@ def pow(val):
     else:
         inor = "in"
         sent = "at this location"
-    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count, form=form, comments=comments)
-
-#to delete a comment on a Prisoner's Page
-@app.route('/delete/<int:val>')
-def deletecomment(val):
-    comment = models.Comment.query.filter(models.Comment.id==val).first_or_404()
-    pow = comment.powid
-    #db.session.delete(comment)
-    #db.session.commit()
-    return redirect('/pow/{}'.format(pow))
+    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count, form=form, comments=comments, deleteform=deleteform)
 
 #This is called from the browse by letter part of website
 @app.route('/results/<val>')

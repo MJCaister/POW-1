@@ -90,7 +90,7 @@ class Comment(db.Model):
     powid = db.Column(db.ForeignKey('Prisoner.id'))
 
     User = db.relationship('User', primaryjoin='Comment.userid == User.id', backref='comments')
-
+    Prisoner = db.relationship('Prisoner', primaryjoin='Comment.powid == Prisoner.id', backref= 'comments')
 #t_sqlite_sequence = db.Table(
 #    'sqlite_sequence',
 #    db.Column('name', db.NullType),

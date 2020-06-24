@@ -62,7 +62,13 @@
   <table>
   {% for c in comments %}
     <tr>
-      <p>{{c.User.username}}: {{c.comment}}{% if current_user.username == c.User.username %} - Delete{% endif %}</p>
+      <p>{{c.User.username}}:
+        <br>{{c.comment}}</p>
+      {% if current_user.username == c.User.username %}
+      <form action="" method="post">
+        {{ deleteform.submit() }}
+      </form>
+      {% endif %}
     </tr>
   {% endfor %}
   </table>

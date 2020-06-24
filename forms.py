@@ -7,6 +7,9 @@ class CommentForm(FlaskForm):
     comment = StringField('Comment', validators=[DataRequired()])
     submit = SubmitField("Post Comment")
 
+class DeleteForm(FlaskForm):
+    submit = SubmitField("Delete Comment")
+
 class SearchForm(FlaskForm):
     query = StringField('query', validators=[DataRequired()])
     submit = SubmitField('🔍')
