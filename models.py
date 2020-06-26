@@ -5,8 +5,9 @@ from sqlalchemy.sql.sqltypes import NullType
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from routes import db
 
-db = SQLAlchemy()
+#db = SQLAlchemy()
 
 class Capture(db.Model):
     __tablename__ = 'Capture'

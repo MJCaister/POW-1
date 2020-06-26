@@ -99,14 +99,14 @@ def logout():
 @app.route('/pow/<int:val>', methods=['GET', 'POST'])
 def pow(val):
     form = CommentForm()
-    if form.validate_on_submit():
+    deleteform = DeleteForm()
+    if form.validate_on_submit() and form.comment.data:
         comment = models.Comment(comment=form.comment.data ,userid=current_user.id, powid=val)
         db.session.add(comment)
         db.session.commit()
+    #elif deleteform.validate_on_submit():
+    #    return redirect('/about')
     comments = models.Comment.query.filter(models.Comment.powid==val).all()
-    deleteform = DeleteForm()
-    if deleteform.validate_on_submit():
-        return redirect('/')
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
     surname = pow.surname
     capture = pow.Capture
@@ -118,7 +118,15 @@ def pow(val):
     else:
         inor = "in"
         sent = "at this location"
-    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count, form=form, comments=comments, deleteform=deleteform)
+    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count, form=form, comments=comments)
+
+@app.route('/delete/<int:user>/<int:com>')
+def delcomment(user, com):
+    pow = models.Comment.query.filter(models.Comment.id==com).first_or_404()
+    comment = db.session.query(models.Comment).filter(models.Comment.id==com).first_or_404()
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect('/pow/{}'.format(pow.powid))
 
 #This is called from the browse by letter part of website
 @app.route('/results/<val>')

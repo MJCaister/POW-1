@@ -65,9 +65,7 @@
       <p>{{c.User.username}}:
         <br>{{c.comment}}</p>
       {% if current_user.username == c.User.username %}
-      <form action="" method="post">
-        {{ deleteform.submit() }}
-      </form>
+        <a href="/delete/{{c.User.id}}/{{c.id}}">Delete Comment</a>
       {% endif %}
     </tr>
   {% endfor %}
