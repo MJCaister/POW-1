@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
@@ -122,11 +122,14 @@ def pow(val):
 
 @app.route('/delete/<int:user>/<int:com>')
 def delcomment(user, com):
-    pow = models.Comment.query.filter(models.Comment.id==com).first_or_404()
-    comment = db.session.query(models.Comment).filter(models.Comment.id==com).first_or_404()
-    db.session.delete(comment)
-    db.session.commit()
-    return redirect('/pow/{}'.format(pow.powid))
+    if current_user.is_authenticated and current_user.id == user:
+        pow = models.Comment.query.filter(models.Comment.id==com).first_or_404()
+        comment = db.session.query(models.Comment).filter(models.Comment.id==com).first_or_404()
+        db.session.delete(comment)
+        db.session.commit()
+        return redirect('/pow/{}'.format(pow.powid))
+    else:
+        abort(404)
 
 #This is called from the browse by letter part of website
 @app.route('/results/<val>')
