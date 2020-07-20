@@ -26,6 +26,10 @@ footer {
   padding-top: 15px;
 }
 
+.contact {
+  text-align: left;
+}
+
 /** Home Page CSS **/
 .POWHome {
   width: 70%;

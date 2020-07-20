@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
-from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm
+from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm
 import models
 
 app=Flask(__name__)
@@ -201,6 +201,11 @@ def results(val):
         pows3 = pows[2::3]
         val = val.upper()
         return render_template("results.html",val=val, results1=pows1, results2=pows2, results3=pows3)
+
+@app.context_processor
+def inject_search():
+    form = ContactForm()
+    return dict(contactform=form)
 
 #404 error handler with custom styled page.
 @app.errorhandler(404)

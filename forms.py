@@ -37,3 +37,9 @@ class RegistrationForm(FlaskForm):
         user = models.User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+
+class ContactForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    message = StringField('Message', validators=[DataRequired()])
+    submit = SubmitField('Submit')
