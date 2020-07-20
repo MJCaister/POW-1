@@ -27,7 +27,10 @@ class Prisoner(db.Model):
     surname = db.Column(db.Text, nullable=False)
     initial = db.Column(db.Text)
     capture = db.Column(db.ForeignKey('Capture.id'))
-
+    first_names = db.Column(db.Text)
+    branch = db.Column(db.Text)
+    photo = db.Column(db.String)
+    
     Capture = db.relationship('Capture', primaryjoin='Prisoner.capture == Capture.id', backref='prisoners')
     Rank = db.relationship('Rank', primaryjoin='Prisoner.rank == Rank.id', backref='prisoners')
     units = db.relationship('PrisonerUnit', back_populates='prisoner')

@@ -110,6 +110,9 @@ def pow(val):
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
     surname = pow.surname
     capture = pow.Capture
+    firstnames = pow.first_names
+    if firstnames == None:
+        firstnames = pow.initial
     count = models.Prisoner.query.filter(models.Prisoner.capture==capture.id).count()
     #grammar for prisoner page
     if isinstance(capture.date, str) == True:
@@ -118,7 +121,7 @@ def pow(val):
     else:
         inor = "in"
         sent = "at this location"
-    return render_template("prisoner.html", val=val, prisoner=pow, page_title=surname, inor=inor, sent=sent, count=count, form=form, comments=comments)
+    return render_template("prisoner.html", val=val, prisoner=pow, first_names = firstnames, inor=inor, sent=sent, count=count, form=form, comments=comments)
 
 @app.route('/delete/<int:user>/<int:com>')
 def delcomment(user, com):
@@ -130,6 +133,59 @@ def delcomment(user, com):
         return redirect('/pow/{}'.format(pow.powid))
     else:
         abort(404)
+
+@app.route('/rank/<int:val>')
+def displayranks(val):
+    pows = models.Prisoner.query.filter(models.Prisoner.rank==val).all()
+    rank = models.Rank.query.filter(models.Rank.id==val).first_or_404()
+    pows1 = pows[::3]
+    pows2 = pows[1::3]
+    pows3 = pows[2::3]
+    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, val=rank.name)
+
+
+#Browse Prisoners by Capture Date/location
+@app.route('/capture/<int:val>')
+def displaycaptures(val):
+    pows = models.Prisoner.query.filter(models.Prisoner.capture==val).all()
+    capture = models.Capture.query.filter(models.Capture.id==val).first_or_404()
+    pows1 = pows[::3]
+    pows2 = pows[1::3]
+    pows3 = pows[2::3]
+    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, val=capture.date)
+
+#Browse Prisoners by Each Unit
+@app.route('/unit/<int:val>/')
+def unitpows(val):
+    prisoners = models.PrisonerUnit.query.filter(models.PrisonerUnit.uid==val).all()
+    print(prisoners)
+    pows = []
+    for x in prisoners:
+        pows.append(x.prisoner)
+    r1 = pows[::3]
+    r2 = pows[1::3]
+    r3 = pows[2::3]
+    return render_template("results.html", val="All Units", results1=r1, results2=r2, results3=r3)
+
+@app.route('/unit/<int:val1>/<int:val2>/')
+def unitspows(val1, val2):
+    p1 = models.PrisonerUnit.query.filter(models.PrisonerUnit.id==val1).all()
+    p2 = models.PrisonerUnit.query.filter(models.PrisonerUnit.id==val2).all()
+    pow1 = []
+    pow2 = []
+    for x in p1:
+        pow1.append(x.prisoner)
+    for y in p2:
+        pow1.append(y.prisoner)
+    print(pow1)
+    pows = []
+    for prisoner in pow1:
+        if prisoner in pow2:
+            pows.append(prisoner)
+    r1 = pows[::3]
+    r2 = pows[1::3]
+    r3 = pows[2::3]
+    return render_template("results.html", val="two unit", results1=r1, results2=r2, results3=r3)
 
 #This is called from the browse by letter part of website
 @app.route('/results/<val>')
@@ -145,16 +201,6 @@ def results(val):
         pows3 = pows[2::3]
         val = val.upper()
         return render_template("results.html",val=val, results1=pows1, results2=pows2, results3=pows3)
-
-#Browse Prisoners by Each Unit
-@app.route('/unit/<int:val>')
-def unitpows(val):
-    pris = models.PrisonerUnit.query.filter_by(uid=val).all()
-    pows = pris.prisoner.all()
-    r1 = pows[::3]
-    r2 = pows[1::3]
-    r3 = pows[2::3]
-    return render_template("results.html", val="All Units", results1=r1, results2=r2, results3=r3)
 
 #404 error handler with custom styled page.
 @app.errorhandler(404)

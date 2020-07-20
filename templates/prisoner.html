@@ -5,25 +5,25 @@
   <div class="powphoto">
     <table
     <tr>
-      <td><img src="#" alt="{{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}} - Photo"></td>
+      <td><img src="{{prisoner.photo}}" alt="{{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}} - Photo"></td>
     </tr>
     <tr>
       <td>Service Number: {{prisoner.service_number}}</td>
     </tr>
       <tr>
-        <td><a href="/ranks">Rank: {{prisoner.Rank.name}}</a></td>
+        <td><a href="/rank/{{prisoner.Rank.id}}">Rank: {{prisoner.Rank.name}}</a></td>
       </tr>
       <tr>
-        <td><a href="/unit/{% for u in prisoner.units %}{{u.unit.id}}{% endfor %}">Unit: {% for u in prisoner.units %} {{u.unit.name}} {% endfor %}</a></td>
+        <td><a href="/unit/{% for u in prisoner.units %}{{u.unit.id}}/{% endfor %}">Unit: {% for u in prisoner.units %} {{u.unit.name}} {% endfor %}</a></td>
       </tr>
       <tr>
-        <td><a href="/capture">Capture: {{prisoner.Capture.date}}</a></td>
+        <td><a href="/capture/{{prisoner.Capture.id}}">Capture: {{prisoner.Capture.date}}</a></td>
       </tr>
     </table>
   </div>
   <div class="powtext">
-    <p>{{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}} served in the
-      {% for u in prisoner.units %} {{u.unit.name}} {% endfor %} of the Second New Zealand
+    <p>{{prisoner.Rank.name}} {{first_names}} {{prisoner.surname}} served in the
+      {% for u in prisoner.units %} {{u.unit.name}} {% endfor %} in the {{prisoner.branch}} of the Second New Zealand
       Expeditionary Force (2NZEF). Unfortunately {{inor}} {{prisoner.Capture.date}} he was
       captured along with {{count}} other soldiers {{sent}}.<br></p>
   </div>
