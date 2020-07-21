@@ -202,6 +202,13 @@ def results(val):
         val = val.upper()
         return render_template("results.html",val=val, results1=pows1, results2=pows2, results3=pows3)
 
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    user = models.User.query.filter_by(username=username).first_or_404()
+    comments = models.Comment.query.filter_by(userid=user.id)
+    return render_template("user.html", user=user, comments=comments)
+
 @app.context_processor
 def inject_search():
     form = ContactForm()

@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h2><span>Hi {{user.username}}</span></h2>
+<h3>Comments</h3>
+{% for c in comments %}
+<p><a href="/prisoner/{{c.powid}}">{{c.comment}} on {{c.Prisoner.Rank.initial}}. {{c.Prisoner.surname}}'s page</a></p>
+{% endfor %}
+
+<h3>Tracked Prisoners</h3>
+{% endblock %}
