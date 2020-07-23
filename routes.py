@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
-from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm
+from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate
 import models
 
 app=Flask(__name__)
@@ -88,6 +88,22 @@ def register():
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
+
+@app.route('/update_password', methods=['GET', 'POST'])
+@login_required
+def updatepass():
+    passwordform = PasswordUpdate()
+    if passwordform.validate_on_submit():
+        if current_user.check_password(passwordform.currentpassword.data):
+            user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
+            user.password_hash = generate_password_hash(passwordform.password.data)
+            db.session.add(user)
+            db.session.commit()
+            flash('Password has been updated!')
+            return redirect(url_for('login'))
+    return render_template('update.html', passwordform=passwordform)
+
+
 
 #logout page. redirects to home
 @app.route('/logout')

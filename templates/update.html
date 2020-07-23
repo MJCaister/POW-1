@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<form class="" method="post">
+  {{passwordform.hidden_tag()}}
+  <p>
+    {{passwordform.currentpassword.label}}<br>
+    {{passwordform.currentpassword(size=32)}}<br>
+    {{passwordform.password.label}}<br>
+    {{passwordform.password(size=32)}}<br>
+    {{passwordform.password2.label}}<br>
+    {{passwordform.password2(size=32)}}<br><br>
+    {{passwordform.submit()}}
+  </p>
+</form>
+
+{% endblock %}
