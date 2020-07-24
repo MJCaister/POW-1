@@ -1,13 +1,20 @@
 <footer>
+  <h2><span>Contact</span></h2>
   <p>Website created by Amy Paull for the RNZRSA</p>
+  <div class="row">
   <form class="contact" method="post">
-    {{contactform.hidden_tag()}}
-    <p>{{contactform.name.label}}<br>
+    <div class="halfsplit">
+      {{contactform.hidden_tag()}}
+      <p>{{contactform.name.label}}<br>
       {{contactform.name(size=32)}}<br>
       {{contactform.email.label}}<br>
       {{contactform.email(size=64)}}<br>
+    </div>
+    <div class="halfsplit">
       {{contactform.message.label}}<br>
       {{contactform.message(size=100)}}
       {{contactform.submit()}}
+    </div>
   </form>
+  </div>
 </footer>
