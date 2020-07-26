@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 #import models
 
 class CommentForm(FlaskForm):
-    comment = StringField('Comment', validators=[DataRequired()])
+    comment = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField("Post Comment")
 
 class DeleteForm(FlaskForm):
@@ -44,8 +44,19 @@ class PasswordUpdate(FlaskForm):
     password2 = PasswordField('Repeat New Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Update Password')
 
+class EmailUpdate(FlaskForm):
+    currentemail = StringField('Current Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    email = StringField('New Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Update Email')
+
+    def validate_email(self, email):
+        user = models.User.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError('Someone already has an account with this email, please use an alternative email address.')
+
 class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    message = StringField('Message', validators=[DataRequired()])
+    message = TextAreaField('Message', validators=[DataRequired()])
     submit = SubmitField('Submit')

@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2><span>Update Email</span></h2>
+<form class="" method="post">
+  {{emailform.hidden_tag()}}
+  <p>
+  {{emailform.currentemail.label}}<br>
+  {{emailform.currentemail(size=64)}}<br>
+  {{emailform.password.label}}<br>
+  {{emailform.password(size=64)}}<br>
+  {{emailform.email.label}}<br>
+  {{emailform.email(size=64)}}<br>
+  {{emailform.submit()}}
+  </p>
+</form>
+{% endblock %}

@@ -14,6 +14,7 @@ class Capture(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Text, nullable=False)
+    fulldate = db.Column(db.Text)
     desc = db.Column(db.Text)
 
 
@@ -30,7 +31,7 @@ class Prisoner(db.Model):
     first_names = db.Column(db.Text)
     branch = db.Column(db.Text)
     photo = db.Column(db.String)
-    
+
     Capture = db.relationship('Capture', primaryjoin='Prisoner.capture == Capture.id', backref='prisoners')
     Rank = db.relationship('Rank', primaryjoin='Prisoner.rank == Rank.id', backref='prisoners')
     units = db.relationship('PrisonerUnit', back_populates='prisoner')
@@ -63,6 +64,7 @@ class Unit(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
+    fullname = db.Column(db.Text)
     desc = db.Column(db.Text)
     photo = db.Column(db.Numeric)
 

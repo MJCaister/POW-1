@@ -12,9 +12,19 @@
   </div>
   <div class="halfsplit">
     <h3>Account Details</h3>
-    <p>Username: {{current_user.username}}</p>
+    <p>Username: {{current_user.username}}
+    <br>
+    Email: {{current_user.email}}
+    </p>
+    <br>
     <br>
     <a href='/update_password'>Change Password</a>
+    <br>
+    <br>
+    <a href='/update_email'>Change Email</a>
+    <br>
+    <br>
+    <a href="/delete_account">Delete Account</a>
   </div>
 </div>
 {% endblock %}
