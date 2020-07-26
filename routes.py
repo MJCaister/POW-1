@@ -135,7 +135,8 @@ def updateemail():
     emailform = EmailUpdate()
     if emailform.validate_on_submit():
         if current_user.check_password(emailform.password.data) and current_user.email==emailform.currentemail.data:
-            user = db.session.query(models.User).filter_by(username=current_user.username).update(email=emailform.email.data)
+            user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
+            user.email = emailform.email.data
             db.session.add(user)
             db.session.commit()
             logout_user()
@@ -272,6 +273,3 @@ def inject_search():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html")
-
-if __name__ == "__main__":
-    app.run(debug=True)
