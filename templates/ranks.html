@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2><span>Showing Results for {{search}}</span></h2>
+
+<div class="row">
+  <div class="coloum">
+    {% for r in r1 %}
+    <p><a href="/rank/{{r.id}}">{% if r.name is not none %}{{r.name}}{% else %}{{r.initial}}{% endif %}</a></p>
+    {% endfor %}
+  </div>
+  <div class="coloum">
+    {% for r in r2 %}
+    <p><a href="/rank/{{r.id}}">{% if r.name is not none %}{{r.name}}{% else %}{{r.initial}}{% endif %}</a></p>
+    {% endfor %}
+  </div>
+  <div class="coloum">
+    {% for r in r3 %}
+    <p><a href="/rank/{{r.id}}">{% if r.name is not none %}{{r.name}}{% else %}{{r.initial}}{% endif %}</a></p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
-from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate
+from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate, EmailUpdate
 import models
 
 app=Flask(__name__)
@@ -59,6 +59,29 @@ def browse():
     form = SearchForm()
     return render_template("browse.html", searchform=form)
 
+@app.route('/rank')
+def ranks():
+    ranks = models.Rank.query.filter().all()
+    r1 = ranks[::3]
+    r2 = ranks[1::3]
+    r3 = ranks[2::3]
+    return render_template("ranks.html", ranks=ranks, search="All Ranks", r1=r1, r2=r2, r3=r3)
+
+@app.route('/unit')
+def units():
+    units = models.Unit.query.filter().all()
+    u1 = units[::3]
+    u2 = units[1::3]
+    u3 = units[2::3]
+    return render_template("units.html", units=units, search="All Units", u1=u1, u2=u2, u3=u3)
+
+@app.route('/capture')
+def capture():
+    capture = models.Capture.query.filter().all()
+    c1 = capture[::3]
+    c2 = capture[1::3]
+    c3 = capture[2::3]
+    return render_template("capture.html", capture=capture, search="All Capture Dates and Locations", c1=c1, c2=c2, c3=c3)
 #login page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -89,6 +112,8 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
+
+#updates the user's password in the database
 @app.route('/update_password', methods=['GET', 'POST'])
 @login_required
 def updatepass():
@@ -100,10 +125,22 @@ def updatepass():
             db.session.add(user)
             db.session.commit()
             flash('Password has been updated!')
+            logout_user()
             return redirect(url_for('login'))
-    return render_template('update.html', passwordform=passwordform)
+    return render_template('updatepass.html', passwordform=passwordform)
 
-
+@app.route('/update_email', methods=['GET', 'POST'])
+@login_required
+def updateemail():
+    emailform = EmailUpdate()
+    if emailform.validate_on_submit():
+        if current_user.check_password(emailform.password.data) and current_user.email==emailform.currentemail.data:
+            user = db.session.query(models.User).filter_by(username=current_user.username).update(email=emailform.email.data)
+            db.session.add(user)
+            db.session.commit()
+            logout_user()
+            return redirect(url_for('login'))
+    return render_template('updateemail.html', emailform=emailform)
 
 #logout page. redirects to home
 @app.route('/logout')
@@ -140,6 +177,7 @@ def pow(val):
     return render_template("prisoner.html", val=val, prisoner=pow, first_names = firstnames, inor=inor, sent=sent, count=count, form=form, comments=comments)
 
 @app.route('/delete/<int:user>/<int:com>')
+@login_required
 def delcomment(user, com):
     if current_user.is_authenticated and current_user.id == user:
         pow = models.Comment.query.filter(models.Comment.id==com).first_or_404()
@@ -171,7 +209,7 @@ def displaycaptures(val):
     return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, val=capture.date)
 
 #Browse Prisoners by Each Unit
-@app.route('/unit/<int:val>/')
+@app.route('/unit/<int:val>')
 def unitpows(val):
     prisoners = models.PrisonerUnit.query.filter(models.PrisonerUnit.uid==val).all()
     print(prisoners)
