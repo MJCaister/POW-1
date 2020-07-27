@@ -55,6 +55,11 @@ class EmailUpdate(FlaskForm):
         if user is not None:
             raise ValidationError('Someone already has an account with this email, please use an alternative email address.')
 
+class DelAccountForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Delete Account')
+
 class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])

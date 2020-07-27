@@ -4,14 +4,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
-from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate, EmailUpdate
+from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate, EmailUpdate, DelAccountForm
 import models
+
 
 app=Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///POW_Project.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ajaj'
+
 
 db = SQLAlchemy(app)
 login = LoginManager(app)
@@ -149,6 +151,20 @@ def logout():
     logout_user()
     return redirect('/')
 
+
+@app.route('/delete_account', methods=['GET', 'POST'])
+@login_required
+def deleteaccount():
+    user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
+    delaccount = DelAccountForm()
+    if delaccount.validate_on_submit() and check_password_hash(current_user.password_hash, delaccount.password.data):
+        db.session.delete(user)
+        db.session.commit()
+        flash('Your account has been deleted.')
+        return redirect('/')
+    else:
+        return render_template('deleteaccount.html', delaccount=delaccount)
+
 #Induvidual POW info page, catches dynamic url only if int since I'm using ids for links
 @app.route('/pow/<int:val>', methods=['GET', 'POST'])
 def pow(val):
@@ -164,9 +180,6 @@ def pow(val):
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
     surname = pow.surname
     capture = pow.Capture
-    firstnames = pow.first_names
-    if firstnames == None:
-        firstnames = pow.initial
     count = models.Prisoner.query.filter(models.Prisoner.capture==capture.id).count()
     #grammar for prisoner page
     if isinstance(capture.date, str) == True:
@@ -175,7 +188,7 @@ def pow(val):
     else:
         inor = "in"
         sent = "at this location"
-    return render_template("prisoner.html", val=val, prisoner=pow, first_names = firstnames, inor=inor, sent=sent, count=count, form=form, comments=comments)
+    return render_template("prisoner.html", val=val, prisoner=pow, inor=inor, sent=sent, count=count, form=form, comments=comments)
 
 @app.route('/delete/<int:user>/<int:com>')
 @login_required
@@ -196,7 +209,7 @@ def displayranks(val):
     pows1 = pows[::3]
     pows2 = pows[1::3]
     pows3 = pows[2::3]
-    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, val=rank.name)
+    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, val=rank.name, val2=rank.initial)
 
 
 #Browse Prisoners by Capture Date/location
@@ -222,7 +235,7 @@ def unitpows(val):
     r3 = pows[2::3]
     return render_template("results.html", val="All Units", results1=r1, results2=r2, results3=r3)
 
-@app.route('/unit/<int:val1>/<int:val2>/')
+@app.route('/unit/<int:val1>/<int:val2>')
 def unitspows(val1, val2):
     p1 = models.PrisonerUnit.query.filter(models.PrisonerUnit.id==val1).all()
     p2 = models.PrisonerUnit.query.filter(models.PrisonerUnit.id==val2).all()

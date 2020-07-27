@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2><span>Delete Account</span></h2>
+<h3>Please login to delete your account.</h3>
+<form class="" method="post">
+  {{delaccount.hidden_tag()}}
+  <p>
+    {{delaccount.username.label}}<br>
+    {{delaccount.username(size=32)}}<br>
+    {{delaccount.password.label}}<br>
+    {{delaccount.password(size=32)}}<br>
+    {{delaccount.submit()}}
+  </p>
+</form>
+
+{% endblock %}
