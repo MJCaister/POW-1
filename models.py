@@ -65,7 +65,7 @@ class Unit(db.Model):
     name = db.Column(db.Text)
     fullname = db.Column(db.Text)
     desc = db.Column(db.Text)
-    photo = db.Column(db.Numeric)
+    photo = db.Column(db.String)
 
     prisoners = db.relationship('PrisonerUnit', back_populates="unit")
 
@@ -96,8 +96,3 @@ class Comment(db.Model):
 
     User = db.relationship('User', primaryjoin='Comment.userid == User.id', backref='comments')
     Prisoner = db.relationship('Prisoner', primaryjoin='Comment.powid == Prisoner.id', backref= 'comments')
-#t_sqlite_sequence = db.Table(
-#    'sqlite_sequence',
-#    db.Column('name', db.NullType),
-#    db.Column('seq', db.NullType)
-#)

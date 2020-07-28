@@ -75,7 +75,7 @@ def units():
     u1 = units[::3]
     u2 = units[1::3]
     u3 = units[2::3]
-    return render_template("units.html", units=units, search="All Units", u1=u1, u2=u2, u3=u3)
+    return render_template("units.html", search="All Units", u1=u1, u2=u2, u3=u3)
 
 @app.route('/capture')
 def capture():
@@ -233,7 +233,7 @@ def unitpows(val):
     r1 = pows[::3]
     r2 = pows[1::3]
     r3 = pows[2::3]
-    return render_template("results.html", val="All Units", results1=r1, results2=r2, results3=r3)
+    return render_template("results.html", val="", results1=r1, results2=r2, results3=r3)
 
 @app.route('/unit/<int:val1>/<int:val2>')
 def unitspows(val1, val2):
