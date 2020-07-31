@@ -2,7 +2,7 @@
 {% block content %}
 
 <h2><span>Showing results for {% if val is not none %}{{val}}{% else %}{{val2}}{% endif %}</span></h2>
-
+<p>Displaying {{count}} Prisoners of War.</p>
 <div class="row">
   <div class="coloum">
       {% for pow in results1 %}

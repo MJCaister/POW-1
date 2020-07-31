@@ -4,20 +4,34 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
-from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate, EmailUpdate, DelAccountForm
-import models
-
+from flask_mail import Mail
+from myemail import send_password_reset_email
+import os
 
 app=Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///POW_Project.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ajaj'
-
+app.config['MAIL_SERVER'] = 'smtp.gmail.com' or os.environ.get('MAIL_SERVER')
+app.config['MAIL_PORT'] = 587 or int(os.environ.get('MAIL_PORT') or 25)
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = '16284@burnside.school.nz' or os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = 'hihi8003' or os.environ.get('MAIL_PASSWORD')
+app.config['ADMINS'] = ['16284@burnside.school.nz']
+print(app.config)
+#app.config['SECURITY_EMAIL_SENDER'] = ['16284@burnside.school.nz']
 
 db = SQLAlchemy(app)
+mail = Mail(app)
 login = LoginManager(app)
 login.login_view = 'login'
+
+
+from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate, EmailUpdate, DelAccountForm, ResetPasswordRequestForm, ResetPasswordForm
+import models
+
+
 
 @login.user_loader
 def load_user(id):
@@ -165,6 +179,35 @@ def deleteaccount():
     else:
         return render_template('deleteaccount.html', delaccount=delaccount)
 
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect('/')
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = models.User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password')
+        return redirect(url_for('login'))
+    return render_template('requestreset.html', title='Reset Password', form=form)
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect('/')
+    user = models.User.verify_reset_password_token(token)
+    if not user:
+        return redirect('/')
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.query(models.User).filter_by(id=user.id).update({models.User.password_hash:user.password_hash})
+        db.session.commit()
+        flash('Your password has been reset.')
+        return redirect('/')
+    return render_template('resetpassword.html', form=form)
+
 #Induvidual POW info page, catches dynamic url only if int since I'm using ids for links
 @app.route('/pow/<int:val>', methods=['GET', 'POST'])
 def pow(val):
@@ -226,6 +269,8 @@ def displaycaptures(val):
 @app.route('/unit/<int:val>')
 def unitpows(val):
     prisoners = models.PrisonerUnit.query.filter(models.PrisonerUnit.uid==val).all()
+    count = len(prisoners)
+    unit = models.Unit.query.filter_by(id=val).first_or_404()
     print(prisoners)
     pows = []
     for x in prisoners:
@@ -233,7 +278,7 @@ def unitpows(val):
     r1 = pows[::3]
     r2 = pows[1::3]
     r3 = pows[2::3]
-    return render_template("results.html", val="", results1=r1, results2=r2, results3=r3)
+    return render_template("results.html", count= count, val=unit.fullname, results1=r1, results2=r2, results3=r3)
 
 @app.route('/unit/<int:val1>/<int:val2>')
 def unitspows(val1, val2):
@@ -263,12 +308,13 @@ def results(val):
     if len(pows) == 0:
         return render_template("results.html", val=val, results="No results.")
     else:
+        count = len(pows)
         #For better display of results I split the results over 3 tables. For resizing purposes it also returns all results incase screen size is too small for 3 table display
         pows1 = pows[::3]
         pows2 = pows[1::3]
         pows3 = pows[2::3]
         val = val.upper()
-        return render_template("results.html",val=val, results1=pows1, results2=pows2, results3=pows3)
+        return render_template("results.html",val=val, count=count, results1=pows1, results2=pows2, results3=pows3)
 
 @app.route('/user/<username>')
 @login_required
