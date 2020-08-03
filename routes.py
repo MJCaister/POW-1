@@ -19,8 +19,6 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = '16284@burnside.school.nz' or os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = 'hihi8003' or os.environ.get('MAIL_PASSWORD')
 app.config['ADMINS'] = ['16284@burnside.school.nz']
-print(app.config)
-#app.config['SECURITY_EMAIL_SENDER'] = ['16284@burnside.school.nz']
 
 db = SQLAlchemy(app)
 mail = Mail(app)
