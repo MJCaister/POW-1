@@ -113,3 +113,13 @@ class Comment(db.Model):
 
     User = db.relationship('User', primaryjoin='Comment.userid == User.id', backref='comments')
     Prisoner = db.relationship('Prisoner', primaryjoin='Comment.powid == Prisoner.id', backref= 'comments')
+
+class UserPrisoner(db.Model):
+    __tablename__ = 'UserPrisoner'
+
+    id = db.Column(db.Integer, primary_key=True)
+    powid = db.Column(db.ForeignKey('Prisoner.id'))
+    userid = db.Column(db.ForeignKey('User.id'))
+
+    Prisoner = db.relationship('Prisoner', primaryjoin='UserPrisoner.powid == Prisoner.id', backref='users')
+    User = db.relationship('User', primaryjoin='UserPrisoner.userid == User.id', backref='prisoners')

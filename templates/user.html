@@ -9,6 +9,9 @@
     <p><a href="/pow/{{c.powid}}">{{c.comment}} on {{c.Prisoner.Rank.initial}}. {{c.Prisoner.surname}}'s page</a></p>
     {% endfor %}
     <h3>Tracked Prisoners</h3>
+    {% for t in tracked %}
+      <p><a href="/pow/{{t.Prisoner.id}}">{{t.Prisoner.Rank.initial}}. {{t.Prisoner.surname}}</a></p>
+    {% endfor %}
   </div>
   <div class="halfsplit">
     <h3>Account Details</h3>

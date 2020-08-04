@@ -218,8 +218,8 @@ def pow(val):
     #elif deleteform.validate_on_submit():
     #    return redirect('/about')
     comments = models.Comment.query.filter(models.Comment.powid==val).all()
+    track = models.UserPrisoner.query.filter(models.UserPrisoner.powid==val).first()
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
-    surname = pow.surname
     capture = pow.Capture
     count = models.Prisoner.query.filter(models.Prisoner.capture==capture.id).count()
     #grammar for prisoner page
@@ -229,7 +229,15 @@ def pow(val):
     else:
         inor = "in"
         sent = "at this location"
-    return render_template("prisoner.html", val=val, prisoner=pow, inor=inor, sent=sent, count=count, form=form, comments=comments)
+    return render_template("prisoner.html", val=val, prisoner=pow, inor=inor, sent=sent, count=count, form=form, comments=comments, tracked=track)
+
+@app.route('/track/<int:pow>/<int:user>')
+@login_required
+def trackprisoner(pow, user):
+    track = models.UserPrisoner(powid=pow, userid=user)
+    db.session.add(track)
+    db.session.commit()
+    return redirect('/pow/{}'.format(pow))
 
 @app.route('/delete/<int:user>/<int:com>')
 @login_required
@@ -319,7 +327,8 @@ def results(val):
 def user(username):
     user = models.User.query.filter_by(username=username).first_or_404()
     comments = models.Comment.query.filter_by(userid=user.id)
-    return render_template("user.html", user=user, comments=comments)
+    tracked = models.UserPrisoner.query.filter_by(userid=user.id)
+    return render_template("user.html", user=user, comments=comments, tracked=tracked)
 
 @app.context_processor
 def inject_search():
