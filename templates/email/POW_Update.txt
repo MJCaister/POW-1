@@ -1,0 +1,8 @@
+Dear {{ user.username }},
+
+Another user has commented on {{POW.Rank.initial}}. {{POW.initial}}. {{POW.surname}}'s page.
+
+{{ url_for('pow', val=POW.id, _external=True) }} Click here to view it!
+
+Thanks,
+The New Zealand P.O.W. Records.

@@ -1,0 +1,7 @@
+<p>Dear {{ user.username }},</p>
+<p>
+  Another user has commented on {{POW.Rank.initial}}. {{POW.initial}}. {{POW.surname}}'s page.
+</p>
+<p><a href="{{ url_for('pow', val=POW.id, _external=True) }}">Click here to view it!</a></p>
+<p>Thanks,</p>
+<p>The New Zealand P.O.W. Records.</p>

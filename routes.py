@@ -5,7 +5,7 @@ from flask_login import LoginManager, current_user, login_user, logout_user, log
 from config import Config
 import sqlite3
 from flask_mail import Mail
-from myemail import send_password_reset_email
+from myemail import send_password_reset_email, send_update_email
 import os
 
 app=Flask(__name__)
@@ -215,8 +215,11 @@ def pow(val):
         comment = models.Comment(comment=form.comment.data ,userid=current_user.id, powid=val)
         db.session.add(comment)
         db.session.commit()
-    #elif deleteform.validate_on_submit():
-    #    return redirect('/about')
+        tuser = models.UserPrisoner.query.filter_by(powid=val).all()
+        if tuser:
+            for user in tuser:
+                print(user)
+                send_update_email(user)
     comments = models.Comment.query.filter(models.Comment.powid==val).all()
     track = models.UserPrisoner.query.filter(models.UserPrisoner.powid==val).first()
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
