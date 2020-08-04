@@ -221,7 +221,10 @@ def pow(val):
                 print(user)
                 send_update_email(user)
     comments = models.Comment.query.filter(models.Comment.powid==val).all()
-    track = models.UserPrisoner.query.filter(models.UserPrisoner.powid==val).first()
+    if current_user.is_authenticated:
+        track = models.UserPrisoner.query.filter_by(powid=val, userid=current_user.id).first()
+    else:
+        track = None
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
     capture = pow.Capture
     count = models.Prisoner.query.filter(models.Prisoner.capture==capture.id).count()
@@ -336,6 +339,8 @@ def user(username):
 @app.context_processor
 def inject_search():
     form = ContactForm()
+    if form.validate_on_submit() and form.message.data:
+        send_admin_contact()
     return dict(contactform=form)
 
 #404 error handler with custom styled page.

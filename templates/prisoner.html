@@ -60,12 +60,12 @@
     {% endif %}
     <h3>Track Prisoner</h3>
     {% if current_user.is_anonymous %}
-    <p>To track a prisoner you need to login. <a href="/login">Click here to login!</a></p>
-    {% elif tracked.User.id == current_user.id %}
-    <p>You're already tracking this prisoner!</p>
+      <p>To track a prisoner you need to login. <a href="/login">Click here to login!</a></p>
+    {% elif tracked is not none %}
+      <p>You're already tracking this prisoner.</p>
     {% else %}
     <p>If you would like to get notified when someone comments on this prisoner's
-    page, <a href="/track/{{prisoner.id}}/{{current_user.id}}">select to track this prisoner</a>!</p>
+      page, <a href="/track/{{prisoner.id}}/{{current_user.id}}">select to track this prisoner</a>!</p>
     {% endif %}
   </div>
 <div class="halfsplit">
