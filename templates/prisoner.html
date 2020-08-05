@@ -63,6 +63,7 @@
       <p>To track a prisoner you need to login. <a href="/login">Click here to login!</a></p>
     {% elif tracked is not none %}
       <p>You're already tracking this prisoner.</p>
+      <p><a href="/deltrack/{{prisoner.id}}">Click here to stop tracking!</a></p>
     {% else %}
     <p>If you would like to get notified when someone comments on this prisoner's
       page, <a href="/track/{{prisoner.id}}/{{current_user.id}}">select to track this prisoner</a>!</p>

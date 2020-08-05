@@ -5,7 +5,7 @@ from flask_login import LoginManager, current_user, login_user, logout_user, log
 from config import Config
 import sqlite3
 from flask_mail import Mail
-from myemail import send_password_reset_email, send_update_email
+from myemail import send_password_reset_email, send_update_email, send_admin_contact
 import os
 
 app=Flask(__name__)
@@ -245,6 +245,14 @@ def trackprisoner(pow, user):
     db.session.commit()
     return redirect('/pow/{}'.format(pow))
 
+@app.route('/deltrack/<int:pow>')
+@login_required
+def deletetracking(pow):
+    track = db.session.query(models.UserPrisoner).filter(models.UserPrisoner.powid==pow and models.UserPrisoner.userid==current_user.id).first()
+    db.session.delete(track)
+    db.session.commit()
+    return redirect('/pow/{}'.format(pow))
+
 @app.route('/delete/<int:user>/<int:com>')
 @login_required
 def delcomment(user, com):
@@ -337,10 +345,10 @@ def user(username):
     return render_template("user.html", user=user, comments=comments, tracked=tracked)
 
 @app.context_processor
-def inject_search():
+def inject_contact():
     form = ContactForm()
-    if form.validate_on_submit() and form.message.data:
-        send_admin_contact()
+    #if form.validate_on_submit() and form.message.data:
+    #    send_admin_contact(form.name.data, form.email.data, form.message.data)
     return dict(contactform=form)
 
 #404 error handler with custom styled page.
