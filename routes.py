@@ -1,3 +1,4 @@
+#imports
 from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,6 +11,7 @@ import os
 
 app=Flask(__name__)
 
+#config for db and flask-mail
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///POW_Project.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ajaj'
@@ -20,21 +22,22 @@ app.config['MAIL_USERNAME'] = '16284@burnside.school.nz' or os.environ.get('MAIL
 app.config['MAIL_PASSWORD'] = 'hihi8003' or os.environ.get('MAIL_PASSWORD')
 app.config['ADMINS'] = ['16284@burnside.school.nz']
 
+#sets up apps
 db = SQLAlchemy(app)
 mail = Mail(app)
 login = LoginManager(app)
 login.login_view = 'login'
 
-
+#imports moved to avoid circle importing
 from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate, EmailUpdate, DelAccountForm, ResetPasswordRequestForm, ResetPasswordForm
 import models
-
 
 
 @login.user_loader
 def load_user(id):
     return models.User.query.get(int(id))
 
+#returns the number of POWs kept in database
 def countpows():
     count = models.Prisoner.query.filter().count()
     return count
@@ -73,6 +76,7 @@ def browse():
     form = SearchForm()
     return render_template("browse.html", searchform=form)
 
+#displays all the ranks in the Rank table
 @app.route('/rank')
 def ranks():
     ranks = models.Rank.query.filter().all()
@@ -81,6 +85,7 @@ def ranks():
     r3 = ranks[2::3]
     return render_template("ranks.html", ranks=ranks, search="All Ranks", r1=r1, r2=r2, r3=r3)
 
+#displays all units in Unit table
 @app.route('/unit')
 def units():
     units = models.Unit.query.filter().all()
@@ -89,6 +94,7 @@ def units():
     u3 = units[2::3]
     return render_template("units.html", search="All Units", u1=u1, u2=u2, u3=u3)
 
+#displays all capture dates and locations
 @app.route('/capture')
 def capture():
     capture = models.Capture.query.filter().all()
@@ -96,14 +102,17 @@ def capture():
     c2 = capture[1::3]
     c3 = capture[2::3]
     return render_template("capture.html", capture=capture, search="All Capture Dates and Locations", c1=c1, c2=c2, c3=c3)
+
 #login page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    #if the user is logged in it redirects as they do not need to login again
     if current_user.is_authenticated:
         return redirect(url_for('/'))
     form = LoginForm()
     if form.validate_on_submit():
         user = models.User.query.filter_by(username=form.username.data).first()
+        #checks against database to see if user is in or if password
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
@@ -240,15 +249,22 @@ def pow(val):
 @app.route('/track/<int:pow>/<int:user>')
 @login_required
 def trackprisoner(pow, user):
-    track = models.UserPrisoner(powid=pow, userid=user)
-    db.session.add(track)
-    db.session.commit()
+    if current_user.id == user:
+        test = models.UserPrisoner.query.filter_by(userid=user, powid=pow).all()
+        if len(test) == 0:
+            track = models.UserPrisoner(powid=pow, userid=user)
+            db.session.add(track)
+            db.session.commit()
+        else:
+            flash("You're already tracking this prisoner.")
+    else:
+        flash("You cannot make other accounts track this prisoner.")
     return redirect('/pow/{}'.format(pow))
 
 @app.route('/deltrack/<int:pow>')
 @login_required
 def deletetracking(pow):
-    track = db.session.query(models.UserPrisoner).filter(models.UserPrisoner.powid==pow and models.UserPrisoner.userid==current_user.id).first()
+    track = db.session.query(models.UserPrisoner).filter(models.UserPrisoner.powid==pow and models.UserPrisoner.userid==current_user.id).first_or_404()
     db.session.delete(track)
     db.session.commit()
     return redirect('/pow/{}'.format(pow))
