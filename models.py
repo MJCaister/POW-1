@@ -11,6 +11,7 @@ from routes import app
 
 db = SQLAlchemy()
 
+
 class Capture(db.Model):
     __tablename__ = 'Capture'
 
@@ -18,7 +19,6 @@ class Capture(db.Model):
     date = db.Column(db.Text, nullable=False)
     fulldate = db.Column(db.Text)
     desc = db.Column(db.Text)
-
 
 
 class Prisoner(db.Model):
@@ -39,7 +39,6 @@ class Prisoner(db.Model):
     units = db.relationship('PrisonerUnit', back_populates='prisoner')
 
 
-
 class PrisonerUnit(db.Model):
     __tablename__ = 'PrisonerUnit'
 
@@ -49,7 +48,6 @@ class PrisonerUnit(db.Model):
 
     prisoner = db.relationship('Prisoner', back_populates="units")
     unit = db.relationship('Unit', back_populates="prisoners")
-
 
 
 class Rank(db.Model):
@@ -71,6 +69,7 @@ class Unit(db.Model):
     photo = db.Column(db.String)
 
     prisoners = db.relationship('PrisonerUnit', back_populates="unit")
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'User'
@@ -103,6 +102,7 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
+
 class Comment(db.Model):
     __tablename__ = 'Comment'
 
@@ -112,7 +112,8 @@ class Comment(db.Model):
     powid = db.Column(db.ForeignKey('Prisoner.id'))
 
     User = db.relationship('User', primaryjoin='Comment.userid == User.id', backref='comments')
-    Prisoner = db.relationship('Prisoner', primaryjoin='Comment.powid == Prisoner.id', backref= 'comments')
+    Prisoner = db.relationship('Prisoner', primaryjoin='Comment.powid == Prisoner.id', backref='comments')
+
 
 class UserPrisoner(db.Model):
     __tablename__ = 'UserPrisoner'

@@ -3,22 +3,27 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextA
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from models import User
 
+
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField("Post Comment")
 
+
 class DeleteForm(FlaskForm):
     submit = SubmitField("Delete Comment")
+
 
 class SearchForm(FlaskForm):
     query = StringField('query', validators=[DataRequired()])
     submit = SubmitField('🔍')
+
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
+
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -38,11 +43,13 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
+
 class PasswordUpdate(FlaskForm):
     currentpassword = PasswordField('Current Password', validators=[DataRequired()])
     password = PasswordField('New Password', validators=[DataRequired()])
     password2 = PasswordField('Repeat New Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Update Password')
+
 
 class EmailUpdate(FlaskForm):
     currentemail = StringField('Current Email', validators=[DataRequired(), Email()])
@@ -53,22 +60,27 @@ class EmailUpdate(FlaskForm):
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
-            raise ValidationError('Someone already has an account with this email, please use an alternative email address.')
+            raise ValidationError(
+                'Someone already has an account with this email, please use an alternative email address.')
+
 
 class DelAccountForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Delete Account')
 
+
 class ResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Request Password Reset')
+
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
+
 
 class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
