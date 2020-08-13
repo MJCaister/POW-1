@@ -4,7 +4,7 @@
 <div class="searchWrapper">
    <form method="POST" action={{ url_for('search') }}>
        {{ searchform.csrf_token }}
-       {{ searchform.query }}{{ searchform.submit }}
+       {{ searchform.query }}{{ searchform.options }}{{ searchform.submit }}
    </form>
    <p>Search via Surname for a Prisoner</p>
  </div>

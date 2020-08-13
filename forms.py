@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from models import User
 
@@ -14,7 +14,8 @@ class DeleteForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    query = StringField('query', validators=[DataRequired()])
+    query = StringField('Query', validators=[DataRequired()])
+    options = SelectField('Refine Search', choices=[('All', 'All'), ('Prisoner', 'Prisoner'), ('Unit', 'Unit'), ('Rank', 'Rank'), ('Capture', 'Capture')])
     submit = SubmitField('🔍')
 
 

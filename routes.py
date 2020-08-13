@@ -7,6 +7,7 @@ from config import Config
 import sqlite3
 from flask_mail import Mail
 from myemail import send_password_reset_email, send_update_email, send_admin_contact
+from sqlalchemy import or_
 import os
 
 app = Flask(__name__)
@@ -44,6 +45,24 @@ def countpows():
     count = models.Prisoner.query.filter().count()
     return count
 
+def prisonersearch(val):
+    pows = models.Prisoner.query.filter(or_((models.Prisoner.surname.ilike('%{}%'.format(val))), (models.Prisoner.first_names.ilike('%{}%'.format(val))), (models.Prisoner.initial.ilike('%{}%'.format(val))))).all()
+    return pows
+
+def unitsearch(val):
+    units = models.Unit.query.filter(or_((models.Unit.fullname.ilike('%{}%'.format(val))), (models.Unit.name.ilike('%{}%'.format(val))))).all()
+    return units
+
+def ranksearch(val):
+    ranks = models.Rank.query.filter(or_((models.Rank.name.ilike('%{}%'.format(val))), (models.Rank.initial.ilike('%{}%'.format(val))))).all()
+    return ranks
+
+def capturesearch(val):
+    captures = models.Capture.query.filter(or_((models.Capture.date.ilike('%{}%'.format(val))), (models.Capture.fulldate.ilike('%{}%'.format(val))))).all()
+    return captures
+
+#def resultscheck(r, search):
+
 
 # Home page route. Returns count info for the about page snippet
 @app.route('/')
@@ -63,17 +82,56 @@ def about():
 @app.route('/records', methods=['POST'])
 def search():
     form = SearchForm()
-    results = models.Prisoner.query.filter(models.Prisoner.surname.ilike('%{}%'.format(form.query.data))).all()
-    if len(results) == 0:
-        return render_template("results.html", val=form.query.data, results="No results.")
-    else:
-        # To achieve the 3 Coloums split of data, results are split through 3 lists
-        results1 = results[::3]
-        results2 = results[1::3]
-        results3 = results[2::3]
-        return render_template('results.html', title='Search Results', val=form.query.data, results1=results1,
+    results = []
+    #ilike returns all that match and is case insensitive
+    if form.options.data == 'All':
+        p = prisonersearch(form.query.data)
+        u = unitsearch(form.query.data)
+        r = ranksearch(form.query.data)
+        c = capturesearch(form.query.data)
+        return render_template('mixedresults.html', p=p, c=c, u=u, r=r, search=form.query.data)
+    elif form.options.data == 'Prisoner':
+        r = prisonersearch(form.query.data)
+        if len(r) == 0:
+            return render_template("results.html", val=search, results="No results.")
+        else:
+            # To achieve the 3 Coloums split of data, results are split through 3 lists
+            results1 = r[::3]
+            results2 = r[1::3]
+            results3 = r[2::3]
+            return render_template('results.html', val=form.query.data, search=form.query.data, results1=results1,
                                results2=results2, results3=results3)
-
+    elif form.options.data == 'Rank':
+        r = ranksearch(form.query.data)
+        if len(r) == 0:
+            return render_template("results.html", val=search, results="No results.")
+        else:
+            # To achieve the 3 Coloums split of data, results are split through 3 lists
+            r1 = r[::3]
+            r2 = r[1::3]
+            r3 = r[2::3]
+        return render_template("ranks.html", ranks=ranks, search=form.query.data, r1=r1, r2=r2, r3=r3)
+    elif form.options.data == 'Capture':
+        r = capturesearch(form.query.data)
+        if len(r) == 0:
+            return render_template("results.html", val=search, results="No results.")
+        else:
+            # To achieve the 3 Coloums split of data, results are split through 3 lists
+            c1 = r[::3]
+            c2 = r[1::3]
+            c3 = r[2::3]
+        return render_template("capture.html", capture=capture, search=form.query.data, c1=c1, c2=c2,
+                               c3=c3)
+    elif form.options.data == 'Unit':
+        r = unitsearch(form.query.data)
+        if len(r) == 0:
+            return render_template("results.html", val=search, results="No results.")
+        else:
+            # To achieve the 3 Coloums split of data, results are split through 3 lists
+            u1 = r[::3]
+            u2 = r[1::3]
+            u3 = r[2::3]
+        return render_template("units.html", search=form.query.data, u1=u1, u2=u2, u3=u3)
 
 # Set browse page
 @app.route('/browse')
@@ -236,7 +294,9 @@ def reset_password(token):
 def pow(val):
     form = CommentForm()
     deleteform = DeleteForm()
+    #ensures that the form being submitted is the comment one.
     if form.validate_on_submit() and form.comment.data:
+        #creates the entry to be added to the database from form data
         comment = models.Comment(comment=form.comment.data, userid=current_user.id, powid=val)
         db.session.add(comment)
         db.session.commit()
@@ -293,6 +353,7 @@ def deletetracking(pow):
 @app.route('/delete/<int:user>/<int:com>')
 @login_required
 def delcomment(user, com):
+    #makes sure that the user is able to delete comment
     if current_user.is_authenticated and current_user.id == user:
         pow = models.Comment.query.filter(models.Comment.id == com).first_or_404()
         comment = db.session.query(models.Comment).filter(models.Comment.id == com).first_or_404()
@@ -380,13 +441,19 @@ def results(val):
         return render_template("results.html", val=val, count=count, results1=pows1, results2=pows2, results3=pows3)
 
 
+#user profile page
 @app.route('/user/<username>')
 @login_required
 def user(username):
-    user = models.User.query.filter_by(username=username).first_or_404()
-    comments = models.Comment.query.filter_by(userid=user.id)
-    tracked = models.UserPrisoner.query.filter_by(userid=user.id)
-    return render_template("user.html", user=user, comments=comments, tracked=tracked)
+    #ensures that the current user is accessing only their user page
+    if current_user.username == username:
+        user = models.User.query.filter_by(username=current_user.username).first_or_404()
+        comments = models.Comment.query.filter_by(userid=user.id)
+        tracked = models.UserPrisoner.query.filter_by(userid=user.id)
+        return render_template("user.html", user=user, comments=comments, tracked=tracked)
+    else:
+        #403 forbbiden error as they do not have permission
+        abort(403)
 
 
 @app.context_processor
