@@ -1,4 +1,36 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h2><span>Results </span></h2>
+<h2><span>Results for {{search}}</span></h2>
+<h3>Prisoner Results</h3>
+{% if p is not none %}
+  {% for pow in p %}
+    <p><a href="/pow/{{pow.id}}">{{pow.service_number}} - {{pow.Rank.initial}} {{pow.initial}}. {{pow.surname}}</a></p>
+  {% endfor %}
+{% else %}
+  <p>No Results</p>
+{% endif %}
+<h3>Unit Results</h3>
+{% if u is not none %}
+  {% for r in u %}
+    <p><a href="/unit/{{r.id}}">{% if r.fullname is not none %}{{r.fullname}}{% else %}{{r.name}}{% endif %}</a></p>
+  {% endfor %}
+{% else %}
+<p>No Results</p>
+{% endif %}
+<h3>Rank Results</h3>
+{% if r is not none %}
+  {% for r in r %}
+    <p><a href="/rank/{{r.id}}">{% if r.name is not none %}{{r.name}}{% else %}{{r.initial}}{% endif %}</a></p>
+  {% endfor %}
+{% else %}
+  <p>No Results</p>
+{% endif %}
+<h3>Capture Results</h3>
+{% if c is not none %}
+  {% for r in c %}
+    <p><a href="/capture/{{r.id}}">{{r.fulldate}}</a></p>
+  {% endfor %}
+{% else %}
+  <p>No Results</p>
+{% endif %}
 {% endblock %}
