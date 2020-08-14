@@ -2,7 +2,7 @@
   <h2><span>Contact</span></h2>
   <p>Website created by Amy Paull for the RNZRSA</p>
   <div class="row">
-  <form class="contact" method="post">
+  <form class="contact" method="post" action={{ url_for('sendcontact') }}>
     <div class="halfsplit">
       {{contactform.hidden_tag()}}
       <p>{{contactform.name.label}}<br>

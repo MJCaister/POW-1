@@ -35,7 +35,7 @@ def send_update_email(tuser):
 def send_admin_contact(name, email, message):
     send_email('New Zealand P.O.W.s - Contact Form',
                sender=routes.app.config['ADMINS'][0],
-               recipients=[email],
+               recipients=[routes.app.config['ADMINS'][0]],
                text_body=render_template('email/contactform.txt',
                                          name=name, email=email, message=message),
                html_body=render_template('email/contactform.html',

@@ -61,13 +61,11 @@ def capturesearch(val):
     captures = models.Capture.query.filter(or_((models.Capture.date.ilike('%{}%'.format(val))), (models.Capture.fulldate.ilike('%{}%'.format(val))))).all()
     return captures
 
-#def resultscheck(r, search):
-
-
 # Home page route. Returns count info for the about page snippet
 @app.route('/')
 def home():
     count = countpows()
+    print(request.META.get('HTTP_REFERER'))
     return render_template("home.html", number=count)
 
 
@@ -104,7 +102,7 @@ def search():
     elif form.options.data == 'Rank':
         r = ranksearch(form.query.data)
         if len(r) == 0:
-            return render_template("results.html", val=search, results="No results.")
+            return render_template("results.html", search=form.query.data, results="No results.")
         else:
             # To achieve the 3 Coloums split of data, results are split through 3 lists
             r1 = r[::3]
@@ -455,13 +453,17 @@ def user(username):
         #403 forbbiden error as they do not have permission
         abort(403)
 
+@app.route('/contact', methods=['GET', 'POST'])
+def sendcontact():
+    contact_form = ContactForm()
+    if contact_form.validate_on_submit() and contact_form.message.data:
+        send_admin_contact(contact_form.name.data, contact_form.email.data, contact_form.message.data)
+    return redirect('')
 
 @app.context_processor
 def inject_contact():
-    form = ContactForm()
-    # if form.validate_on_submit() and form.message.data:
-    #    send_admin_contact(form.name.data, form.email.data, form.message.data)
-    return dict(contactform=form)
+    contact_form = ContactForm()
+    return dict(contactform=contact_form)
 
 
 # 404 error handler with custom styled page.
