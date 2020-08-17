@@ -5,7 +5,9 @@
   <div class="powphoto">
     <table
     <tr>
-      <td><img src="{{prisoner.photo}}" alt="{{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}} - Photo"></td>
+      <td>{% if prisoner.photo is not none %}<img src="{{prisoner.photo}}"
+        alt="{{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}} - Photo">
+        {% else %} <img src="{{prisoner.units.unit.photo}}" alt="{{prisoner.units.unit.name}} - Photo">{% endif %}</td>
     </tr>
     <tr>
       <td>Service Number: {{prisoner.service_number}}</td>
@@ -45,17 +47,19 @@
   <h2><span>Comments</span></h2>
   <div class="halfsplit">
     {% if current_user.is_anonymous %}
-    <p>To comment on a Prisoner's profile you need to login in. <a href="/login">Click Here to Login!</a></p>
+    <p>To comment on a Prisoner's profile you need to login in.
+      <a href="/login">Click Here to Login!</a>
+    </p>
     {% elif current_user.is_authenticated %}
-    <form action="" method="post">
-      {{ form.hidden_tag() }}
-      <p>{{ form.comment.label }}<br>
-      {{ form.comment(size=100) }}<br>
-      {% for error in form.comment.errors %}
-      <span style="color: red;">[{{ error }}]</span>
-      {% endfor %}
-      </p>
-      <p>{{ form.submit() }}</p>
+      <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>{{ form.comment.label }}<br>
+          {{ form.comment(size=100) }}<br>
+          {% for error in form.comment.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
     </form>
     {% endif %}
     <h3>Track Prisoner</h3>
