@@ -65,7 +65,7 @@ def capturesearch(val):
 @app.route('/')
 def home():
     count = countpows()
-    print(request.META.get('HTTP_REFERER'))
+    #print(request.META.get('HTTP_REFERER'))
     return render_template("home.html", number=count)
 
 
