@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.urls import url_parse
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from config import Config
 import sqlite3
@@ -181,9 +182,12 @@ def login():
         # checks against database to see if user is in or if password
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            return redirect(url_for('login'))
+            return render_template('login.html', form=form)
         login_user(user, remember=form.remember_me.data)
-        return redirect('/user/{}'.format(form.username.data))
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('userprofile', username=current_user.username)
+        return redirect(next_page)
     return render_template("login.html", form=form)
 
 
@@ -326,8 +330,8 @@ def pow(val):
 @login_required
 def trackprisoner(pow, user):
     if current_user.id == user:
-        test = models.UserPrisoner.query.filter_by(userid=user, powid=pow).all()
-        if len(test) == 0:
+        test = models.UserPrisoner.query.filter_by(userid=user, powid=pow).fist()
+        if test is None:
             track = models.UserPrisoner(powid=pow, userid=user)
             db.session.add(track)
             db.session.commit()
@@ -342,10 +346,13 @@ def trackprisoner(pow, user):
 @login_required
 def deletetracking(pow):
     track = db.session.query(models.UserPrisoner).filter(
-        models.UserPrisoner.powid == pow and models.UserPrisoner.userid == current_user.id).first_or_404()
-    db.session.delete(track)
-    db.session.commit()
-    return redirect('/pow/{}'.format(pow))
+        models.UserPrisoner.powid == pow and models.UserPrisoner.userid == current_user.id).first()
+    if track is not None:
+        db.session.delete(track)
+        db.session.commit()
+        return redirect('/pow/{}'.format(pow))
+    else:
+        abort(403)
 
 
 @app.route('/delete/<int:user>/<int:com>')
@@ -359,7 +366,7 @@ def delcomment(user, com):
         db.session.commit()
         return redirect('/pow/{}'.format(pow.powid))
     else:
-        abort(404)
+        abort(403)
 
 
 @app.route('/rank/<int:val>')
@@ -442,7 +449,7 @@ def results(val):
 #user profile page
 @app.route('/user/<username>')
 @login_required
-def user(username):
+def userprofile(username):
     #ensures that the current user is accessing only their user page
     if current_user.username == username:
         user = models.User.query.filter_by(username=current_user.username).first_or_404()
