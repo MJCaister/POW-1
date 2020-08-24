@@ -15,7 +15,9 @@ class DeleteForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     query = StringField('Query', validators=[DataRequired()])
-    options = SelectField('Refine Search', choices=[('All', 'All'), ('Prisoner', 'Prisoner'), ('Unit', 'Unit'), ('Rank', 'Rank'), ('Capture', 'Capture')])
+    options = SelectField('Refine Search', choices=[('All', 'All'), ('Prisoner', 'Prisoner'),
+                                                    ('Unit', 'Unit'), ('Rank', 'Rank'),
+                                                    ('Capture', 'Capture')])
     submit = SubmitField('🔍')
 
 

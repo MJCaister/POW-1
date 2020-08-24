@@ -46,27 +46,37 @@ def countpows():
     count = models.Prisoner.query.filter().count()
     return count
 
+
 def prisonersearch(val):
-    pows = models.Prisoner.query.filter(or_((models.Prisoner.surname.ilike('%{}%'.format(val))), (models.Prisoner.first_names.ilike('%{}%'.format(val))), (models.Prisoner.initial.ilike('%{}%'.format(val))))).all()
+    pows = models.Prisoner.query.filter(or_((models.Prisoner.surname.ilike('%{}%'.format(val))),
+                                            (models.Prisoner.first_names.ilike('%{}%'.format(val))),
+                                            (models.Prisoner.initial.ilike('%{}%'.format(val))))).all()
     return pows
 
+
 def unitsearch(val):
-    units = models.Unit.query.filter(or_((models.Unit.fullname.ilike('%{}%'.format(val))), (models.Unit.name.ilike('%{}%'.format(val))))).all()
+    units = models.Unit.query.filter(
+        or_((models.Unit.fullname.ilike('%{}%'.format(val))), (models.Unit.name.ilike('%{}%'.format(val))))).all()
     return units
 
+
 def ranksearch(val):
-    ranks = models.Rank.query.filter(or_((models.Rank.name.ilike('%{}%'.format(val))), (models.Rank.initial.ilike('%{}%'.format(val))))).all()
+    ranks = models.Rank.query.filter(
+        or_((models.Rank.name.ilike('%{}%'.format(val))), (models.Rank.initial.ilike('%{}%'.format(val))))).all()
     return ranks
 
+
 def capturesearch(val):
-    captures = models.Capture.query.filter(or_((models.Capture.date.ilike('%{}%'.format(val))), (models.Capture.fulldate.ilike('%{}%'.format(val))))).all()
+    captures = models.Capture.query.filter(
+        or_((models.Capture.date.ilike('%{}%'.format(val))), (models.Capture.fulldate.ilike('%{}%'.format(val))))).all()
     return captures
+
 
 # Home page route. Returns count info for the about page snippet
 @app.route('/')
 def home():
     count = countpows()
-    #print(request.META.get('HTTP_REFERER'))
+    # print(request.META.get('HTTP_REFERER'))
     return render_template("home.html", number=count)
 
 
@@ -82,7 +92,7 @@ def about():
 def search():
     form = SearchForm()
     results = []
-    #ilike returns all that match and is case insensitive
+    # ilike returns all that match and is case insensitive
     if form.options.data == 'All':
         p = prisonersearch(form.query.data)
         u = unitsearch(form.query.data)
@@ -99,7 +109,7 @@ def search():
             results2 = r[1::3]
             results3 = r[2::3]
             return render_template('results.html', val=form.query.data, search=form.query.data, results1=results1,
-                               results2=results2, results3=results3)
+                                   results2=results2, results3=results3)
     elif form.options.data == 'Rank':
         r = ranksearch(form.query.data)
         if len(r) == 0:
@@ -131,6 +141,7 @@ def search():
             u2 = r[1::3]
             u3 = r[2::3]
         return render_template("units.html", search=form.query.data, u1=u1, u2=u2, u3=u3)
+
 
 # Set browse page
 @app.route('/browse')
@@ -213,8 +224,11 @@ def register():
 def updatepass():
     passwordform = PasswordUpdate()
     if passwordform.validate_on_submit():
+        # checks the current users password matches the password entered in the form
         if current_user.check_password(passwordform.currentpassword.data):
+            # gets the current user data in a session
             user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
+            # generates password hash for the new password
             user.password_hash = generate_password_hash(passwordform.password.data)
             db.session.add(user)
             db.session.commit()
@@ -296,16 +310,17 @@ def reset_password(token):
 def pow(val):
     form = CommentForm()
     deleteform = DeleteForm()
-    #ensures that the form being submitted is the comment one.
+    # ensures that the form being submitted is the comment one.
     if form.validate_on_submit() and form.comment.data:
-        #creates the entry to be added to the database from form data
+        # creates the entry to be added to the database from form data
         comment = models.Comment(comment=form.comment.data, userid=current_user.id, powid=val)
         db.session.add(comment)
         db.session.commit()
+        # checks to see if any user tracks this prisoner
         tuser = models.UserPrisoner.query.filter_by(powid=val).all()
         if tuser:
             for user in tuser:
-                print(user)
+                # sends an email to each user who tracks the prisoner
                 send_update_email(user)
     comments = models.Comment.query.filter(models.Comment.powid == val).all()
     if current_user.is_authenticated:
@@ -330,7 +345,7 @@ def pow(val):
 @login_required
 def trackprisoner(pow, user):
     if current_user.id == user:
-        test = models.UserPrisoner.query.filter_by(userid=user, powid=pow).fist()
+        test = models.UserPrisoner.query.filter_by(userid=user, powid=pow).first()
         if test is None:
             track = models.UserPrisoner(powid=pow, userid=user)
             db.session.add(track)
@@ -358,7 +373,7 @@ def deletetracking(pow):
 @app.route('/delete/<int:user>/<int:com>')
 @login_required
 def delcomment(user, com):
-    #makes sure that the user is able to delete comment
+    # makes sure that the user is able to delete comment
     if current_user.is_authenticated and current_user.id == user:
         pow = models.Comment.query.filter(models.Comment.id == com).first_or_404()
         comment = db.session.query(models.Comment).filter(models.Comment.id == com).first_or_404()
@@ -446,19 +461,20 @@ def results(val):
         return render_template("results.html", val=val, count=count, results1=pows1, results2=pows2, results3=pows3)
 
 
-#user profile page
+# user profile page
 @app.route('/user/<username>')
 @login_required
 def userprofile(username):
-    #ensures that the current user is accessing only their user page
+    # ensures that the current user is accessing only their user page
     if current_user.username == username:
         user = models.User.query.filter_by(username=current_user.username).first_or_404()
         comments = models.Comment.query.filter_by(userid=user.id)
         tracked = models.UserPrisoner.query.filter_by(userid=user.id)
         return render_template("user.html", user=user, comments=comments, tracked=tracked)
     else:
-        #403 forbbiden error as they do not have permission
+        # 403 forbbiden error as they do not have permission
         abort(403)
+
 
 @app.route('/contact', methods=['GET', 'POST'])
 def sendcontact():
@@ -466,6 +482,7 @@ def sendcontact():
     if contact_form.validate_on_submit() and contact_form.message.data:
         send_admin_contact(contact_form.name.data, contact_form.email.data, contact_form.message.data)
     return redirect('')
+
 
 @app.context_processor
 def inject_contact():
