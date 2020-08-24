@@ -11,7 +11,7 @@
     <h3>Tracked Prisoners</h3>
     {% for t in tracked %}
       <p><a href="/pow/{{t.Prisoner.id}}">{{t.Prisoner.Rank.initial}}. {{t.Prisoner.surname}}</a></p>
-      <p>Remove from tracking list?</p>
+      <p><a href="/deltrack/{{t.Prisoner.id}}">Remove from tracking list?</a></p>
     {% endfor %}
   </div>
   <div class="halfsplit">

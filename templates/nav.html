@@ -1,5 +1,7 @@
 <nav>
-  <h4>Welcome {% if current_user.is_authenticated %}<a href="/user/{{current_user.username}}">{{current_user.username}}</a>{% endif %} | {% if current_user.is_anonymous %}
+  <h4>Welcome {% if current_user.is_authenticated %}
+    <a href="/user/{{current_user.username}}">{{current_user.username}}</a>
+    {% endif %} | {% if current_user.is_anonymous %}
   <a href="/login">Login</a> / <a href="/register">Sign Up</a>
   {% else %}
   <a href="/logout">Logout</a>
@@ -10,13 +12,4 @@
     <li><a href="/about">About</a></li>
     <li><a href="/browse">Search</a></li>
   </ul>
-  {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
 </nav>
