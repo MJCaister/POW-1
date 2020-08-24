@@ -61,6 +61,7 @@ footer {
 
 .row {
   width: 100%;
+  padding-top: 20px;
   display: inline;
 }
 
@@ -98,14 +99,25 @@ footer {
 }
 
 /** About Page Styling **/
-.aboutpage {
-  text-align: center;
+.abouttext {
+  width: 60%;
+  float: left;
 }
 
-.aboutpage p {
+.abouttext p {
   padding-top: 30px;
-  width: 70%;
-  padding-left: 15%;
+  padding-left: 30px;
+  text-align: left;
+}
+
+.aboutphoto {
+  width: 40%;
+  float: left;
+  padding-top: 30px;
+}
+
+.aboutphoto img {
+  width: 100%;
 }
 
 
@@ -121,6 +133,7 @@ footer {
 }
 
 .powphoto {
+  padding-top: 20;
   width: 25%;
   float: left;
 }

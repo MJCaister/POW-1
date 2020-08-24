@@ -1,13 +1,12 @@
 {% extends 'layout.html' %}
 {% block content %}
 <h2><span>About.</span></h2>
-<div class="aboutpage">
+<div class="row">
+  <div class="abouttext">
   <p> Throughout the second World War over 8000 New Zealand soldiers were captured and taken as
     Prisoners of War, one in 200 of people of the New Zealand population at the time. This database holds
     {{number}} records of New Zealanders who were taken prisoner by the axis powers.
-  </p>
-  <img src="/static/images/Campo-57.jpg" alt="Prisoner of War at Benghazi">
-  <p>
+    <br><br>
     New Zealand fought the Second World War from all over the globe, with involvement in defending the pacific,
     in the defeat of the allied forces at the Battle of Crete and in the North African theatre as well.
     As a result New Zealand had the highest ratio of killed per million people in the Commonwealth at 6684
@@ -16,33 +15,41 @@
     in the North Africian Theatre caused over 4000 men to be captured and 10000 to be killed, while this
     costly campaign was successful despite the vast loss, other battles were not. The Battle of Crete was
     unsuccessful for the allied forces and here over 2000 men were captured and 671 men died.
-    <br><br>
-    Overall in New Zealand we don't often recognize the experience of most men who were Prisoners of War,
-    outside of those who earned high class medals such as Charles Upham getting a Victoria's Cross. While
-    recognizing these men, we should not forget those who were not the Captains and Lieutenants and equally
-    lived through the awful experience of being taken as prisoner.
-    </p>
+  </p>
+  </div>
+  <div class="aboutphoto">
+    <img src="/static/images/Campo-57.jpg" alt="Prisoner of War at Benghazi">
+  </div>
+</div>
+<div class="row">
+  <div class="aboutphoto">
     <img src="/static/images/Benghazi.jpg" alt="Prisoners of War packing up at Campo 57 for transport to Germany">
-    <p>
-    This website is dedicated to my Great Uncle Patrick Monaghan. He was a private in the 25th New Zealand
-    battalion and my own research into his experience as a prisoner of war was the inspiration for this
-    website. He was captured on the 22nd of July 1942 in North Africa during the Second Battle of Ruweisat
-    Bridge during the First Battle of El Alamein. He was kept at Benghazi before being transported to Italy
-    in accordance with the Geneva Convention of 1929 rule. He was unfortunately traveling on the Nino Bixio,
-    which was torpedoed by a British Submarine. This caused the deaths of 118 New Zealand soldiers, and
-    Private Monaghan survived but sustained injuries to his leg and hip. He was taken to a Greek Hospital
-    before being transported to Campo 57 - Grupignano. He remained here till Italy's capitulation in September
-    of 1943, he remained at the camp and so was taken by the German's and transported to a German Prisoner of War
-    camp. ** CAMP MOVING **. As the German's were losing ground in early 1945, the decision was made to march the
-    Prisoners away from the Soviets who were invading from the East. From Stalag VIII-B, the prisoners marched
-     across Germany in the winter to **LOCATION** where they were liberated by the Americans on the
-    **DATE**.
-    <br><br>
-    His experience was not unique to him, countless other men experienced the cruel treatment of being a
-    prisoner of war. This website aims to help aid people in searching for family who had served and
-    hopefully gives them a better idea of what they went through during the Second World War as this is
-    not a topic widely discussed in New Zealand.
+  </div>
+  <div class="abouttext">
+    <p> Overall in New Zealand we don't often recognize the experience of most men who were Prisoners of War,
+      outside of those who earned high class medals such as Charles Upham getting a Victoria's Cross. While
+      recognizing these men, we should not forget those who were not the Captains and Lieutenants and equally
+      lived through the awful experience of being taken as prisoner.
+      <br><br>
+      This website is dedicated to my Great Uncle Patrick Monaghan. He was a private in the 25th New Zealand
+      battalion and my own research into his experience as a prisoner of war was the inspiration for this
+      website. He was captured on the 22nd of July 1942 in North Africa during the Second Battle of Ruweisat
+      Bridge during the First Battle of El Alamein. He was kept at Benghazi before being transported to Italy
+      in accordance with the Geneva Convention of 1929 rule. He was unfortunately traveling on the Nino Bixio,
+      which was torpedoed by a British Submarine. This caused the deaths of 118 New Zealand soldiers, and
+      Private Monaghan survived but sustained injuries to his leg and hip. He was taken to a Greek Hospital
+      before being transported to Campo 57 - Grupignano. He remained here till Italy's capitulation in September
+      of 1943, he remained at the camp and so was taken by the German's and transported to a German Prisoner of War
+      camp. ** CAMP MOVING **. As the German's were losing ground in early 1945, the decision was made to march the
+      Prisoners away from the Soviets who were invading from the East. From Stalag VIII-B, the prisoners marched
+      across Germany in the winter to **LOCATION** where they were liberated by the Americans on the
+      **DATE**.
+      <br><br>
+      His experience was not unique to him, countless other men experienced the cruel treatment of being a
+      prisoner of war. This website aims to help aid people in searching for family who had served and
+      hopefully gives them a better idea of what they went through during the Second World War as this is
+      not a topic widely discussed in New Zealand.
     </p>
   </div>
-
+</div>
 {% endblock %}
