@@ -383,7 +383,7 @@ def trackprisoner(pow, user):
         else:
             flash("You're already tracking this prisoner.")
     else:
-        flash("You cannot make other accounts track this prisoner.")
+        abort(403)
     return redirect('/pow/{}'.format(pow))
 
 
