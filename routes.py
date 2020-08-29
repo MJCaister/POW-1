@@ -106,45 +106,45 @@ def search():
     elif form.options.data == 'Prisoner':
         r = prisonersearch(form.query.data)
         if len(r) == 0:
-            return render_template("results.html", val=search, results="No results.")
+            return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
             # To achieve the 3 Coloums split of data, results are split through 3 lists
             results1 = r[::3]
             results2 = r[1::3]
             results3 = r[2::3]
-            return render_template('results.html', val=form.query.data, search=form.query.data, results1=results1,
-                                   results2=results2, results3=results3)
+            return render_template('results.html', search=form.query.data, results1=results1,
+                                   results2=results2, results3=results3, count=len(r))
     elif form.options.data == 'Rank':
         r = ranksearch(form.query.data)
         if len(r) == 0:
-            return render_template("results.html", search=form.query.data, results="No results.")
+            return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
             # To achieve the 3 Coloums split of data, results are split through 3 lists
             r1 = r[::3]
             r2 = r[1::3]
             r3 = r[2::3]
-        return render_template("ranks.html", ranks=ranks, search=form.query.data, r1=r1, r2=r2, r3=r3)
+        return render_template("ranks.html", ranks=ranks, search=form.query.data, r1=r1, r2=r2, r3=r3, count=len(r))
     elif form.options.data == 'Capture':
         r = capturesearch(form.query.data)
         if len(r) == 0:
-            return render_template("results.html", val=search, results="No results.")
+            return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
             # To achieve the 3 Coloums split of data, results are split through 3 lists
             c1 = r[::3]
             c2 = r[1::3]
             c3 = r[2::3]
         return render_template("capture.html", capture=capture, search=form.query.data, c1=c1, c2=c2,
-                               c3=c3)
+                               c3=c3, count=len(r))
     elif form.options.data == 'Unit':
         r = unitsearch(form.query.data)
         if len(r) == 0:
-            return render_template("results.html", val=search, results="No results.")
+            return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
             # To achieve the 3 Coloums split of data, results are split through 3 lists
             u1 = r[::3]
             u2 = r[1::3]
             u3 = r[2::3]
-        return render_template("units.html", search=form.query.data, u1=u1, u2=u2, u3=u3)
+        return render_template("units.html", search=form.query.data, u1=u1, u2=u2, u3=u3, count=len(r))
 
 
 # Set browse page
@@ -190,7 +190,7 @@ def capture():
 def login():
     # if the user is logged in it redirects as they do not need to login again
     if current_user.is_authenticated:
-        return redirect(url_for('/'))
+        return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = models.User.query.filter_by(username=form.username.data).first()
@@ -286,13 +286,17 @@ def deleteaccount():
         user = db.session.query(models.User).filter_by(username=delaccount.username.data).first_or_404()
         if check_password_hash(user.password_hash, delaccount.password.data):
             uid = current_user.id
+            while True:
+                tracking = db.session.query(models.Following).filter_by(userid=uid).first()
+                if tracking:
+                    db.session.delete(tracking)
+                    db.session.commit()
+                else:
+                    break
             db.session.delete(user)
             db.session.commit()
             flash('Your account has been deleted.')
             #this deletes their all trackings of pows from this account
-            tracking = db.session.query(models.Following).filter_by(userid=uid).all()
-            db.session.delete(tracking)
-            db.session.commit()
             return redirect('/')
         else:
             flash('Invalid Username or Password')
@@ -417,8 +421,7 @@ def displayranks(val):
     pows1 = pows[::3]
     pows2 = pows[1::3]
     pows3 = pows[2::3]
-    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, val=rank.name,
-                           val2=rank.initial)
+    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, search=rank.name, count=len(pows))
 
 
 # Browse Prisoners by Capture Date/location
@@ -429,7 +432,7 @@ def displaycaptures(val):
     pows1 = pows[::3]
     pows2 = pows[1::3]
     pows3 = pows[2::3]
-    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, val=capture.date)
+    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, search=capture.fulldate, count=len(pows))
 
 
 # Browse Prisoners by Each Unit
@@ -445,13 +448,13 @@ def unitpows(val):
     r1 = pows[::3]
     r2 = pows[1::3]
     r3 = pows[2::3]
-    return render_template("results.html", count=count, val=unit.fullname, results1=r1, results2=r2, results3=r3)
+    return render_template("results.html", count=count, search=unit.fullname, results1=r1, results2=r2, results3=r3)
 
 
 @app.route('/unit/<int:val1>/<int:val2>')
 def unitspows(val1, val2):
-    p1 = models.PrisonerUnit.query.filter(models.PrisonerUnit.id == val1).all()
-    p2 = models.PrisonerUnit.query.filter(models.PrisonerUnit.id == val2).all()
+    p1 = models.PrisonerUnit.query.filter(models.PrisonerUnit.uid == val1).all()
+    p2 = models.PrisonerUnit.query.filter(models.PrisonerUnit.uid == val2).all()
     pow1 = []
     pow2 = []
     for x in p1:
@@ -466,25 +469,27 @@ def unitspows(val1, val2):
     r1 = pows[::3]
     r2 = pows[1::3]
     r3 = pows[2::3]
-    return render_template("results.html", val="two unit", results1=r1, results2=r2, results3=r3)
+    return render_template("results.html", search="two unit", results1=r1, results2=r2, results3=r3)
 
 
 # This is called from the browse by letter part of website
 @app.route('/results/<val>')
 def results(val):
-    # will have to add try except for search use
-    pows = models.Prisoner.query.filter(models.Prisoner.surname.ilike('{}%' \
-                                                                      .format(val))).all()
-    if len(pows) == 0:
-        return render_template("results.html", val=val, results="No results.")
+    if len(val) > 1 or val.isalpha() == False:
+        abort(404)
     else:
-        count = len(pows)
-        # For better display of results I split the results over 3 tables. For resizing purposes it also returns all results incase screen size is too small for 3 table display
-        pows1 = pows[::3]
-        pows2 = pows[1::3]
-        pows3 = pows[2::3]
-        val = val.upper()
-        return render_template("results.html", val=val, count=count, results1=pows1, results2=pows2, results3=pows3)
+        pows = models.Prisoner.query.filter(models.Prisoner.surname.ilike('{}%' \
+                                                                          .format(val))).all()
+        if len(pows) == 0:
+            return render_template("results.html", search=val, results="No results.", count=len(pows))
+        else:
+            count = len(pows)
+            # For better display of results I split the results over 3 tables. For resizing purposes it also returns all results incase screen size is too small for 3 table display
+            pows1 = pows[::3]
+            pows2 = pows[1::3]
+            pows3 = pows[2::3]
+            val = val.upper()
+            return render_template("results.html", search=val, count=count, results1=pows1, results2=pows2, results3=pows3)
 
 
 # user profile page
