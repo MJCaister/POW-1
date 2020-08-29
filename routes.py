@@ -30,7 +30,7 @@ mail = Mail(app)
 login = LoginManager(app)
 login.login_view = 'login'
 
-# imports moved to avoid circle importing
+#imports moved down to avoid circle importing
 from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate, \
     EmailUpdate, DelAccountForm, ResetPasswordRequestForm, ResetPasswordForm
 import models
@@ -91,7 +91,14 @@ def about():
     return render_template("about.html", number=count)
 
 
-# Return a search result from the form shown on every page (page_title.html)
+#Browse and search page
+@app.route('/browse')
+def browse():
+    form = SearchForm()
+    return render_template("browse.html", searchform=form)
+
+
+#This is the results of the search page
 @app.route('/records', methods=['POST'])
 def search():
     form = SearchForm()
@@ -105,6 +112,7 @@ def search():
         return render_template('mixedresults.html', p=p, c=c, u=u, r=r, search=form.query.data)
     elif form.options.data == 'Prisoner':
         r = prisonersearch(form.query.data)
+        #checks for if data is returned
         if len(r) == 0:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
@@ -119,7 +127,7 @@ def search():
         if len(r) == 0:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
-            # To achieve the 3 Coloums split of data, results are split through 3 lists
+            #To achieve the 3 Coloums split of data, results are split through 3 lists
             r1 = r[::3]
             r2 = r[1::3]
             r3 = r[2::3]
@@ -129,7 +137,7 @@ def search():
         if len(r) == 0:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
-            # To achieve the 3 Coloums split of data, results are split through 3 lists
+            #To achieve the 3 Coloums split of data, results are split through 3 lists
             c1 = r[::3]
             c2 = r[1::3]
             c3 = r[2::3]
@@ -147,17 +155,11 @@ def search():
         return render_template("units.html", search=form.query.data, u1=u1, u2=u2, u3=u3, count=len(r))
 
 
-# Set browse page
-@app.route('/browse')
-def browse():
-    form = SearchForm()
-    return render_template("browse.html", searchform=form)
-
-
 # displays all the ranks in the Rank table
 @app.route('/rank')
 def ranks():
     ranks = models.Rank.query.filter().all()
+    #list splicing for 3 coloum split
     r1 = ranks[::3]
     r2 = ranks[1::3]
     r3 = ranks[2::3]
@@ -168,6 +170,7 @@ def ranks():
 @app.route('/unit')
 def units():
     units = models.Unit.query.filter().all()
+    #list splicing for 3 column data split
     u1 = units[::3]
     u2 = units[1::3]
     u3 = units[2::3]
@@ -178,6 +181,7 @@ def units():
 @app.route('/capture')
 def capture():
     capture = models.Capture.query.filter().all()
+    #list splicing for 3 column data split
     c1 = capture[::3]
     c2 = capture[1::3]
     c3 = capture[2::3]
@@ -199,8 +203,10 @@ def login():
             flash('Invalid username or password')
             return render_template('login.html', form=form)
         login_user(user, remember=form.remember_me.data)
+        #this gets the next page information if coming from a login required page
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
+            #sets next page to be user profile if there's no next defined
             next_page = url_for('userprofile', username=current_user.username)
         return redirect(next_page)
     return render_template("login.html", form=form)
@@ -209,10 +215,12 @@ def login():
 # register account page
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    #user cannot register if already logged in
     if current_user.is_authenticated:
         return redirect('/')
     form = RegistrationForm()
     if form.validate_on_submit():
+        #creates and commits the database entry
         user = models.User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
@@ -252,6 +260,7 @@ def updatepass():
 def updateemail():
     emailform = EmailUpdate()
     if emailform.validate_on_submit():
+        #checks that the user has entered all details correctly
         if current_user.check_password(emailform.password.data) and current_user.email == emailform.currentemail.data:
             if current_user.email == emailform.email.data:
                 flash('You cannot update to current email')
@@ -260,6 +269,7 @@ def updateemail():
                 if user:
                     flash('This email is already tied to a different account')
                 else:
+                    #if all info is matching and the new email is allowed, it'll update the database
                     user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
                     user.email = emailform.email.data
                     db.session.add(user)
@@ -278,16 +288,19 @@ def logout():
     return redirect('/')
 
 
+#Delete Account URL
 @app.route('/delete_account', methods=['GET', 'POST'])
 @login_required
 def deleteaccount():
     delaccount = DelAccountForm()
     if delaccount.validate_on_submit():
+        #checks the user info is in the database and is correct
         user = db.session.query(models.User).filter_by(username=delaccount.username.data).first_or_404()
-        if check_password_hash(user.password_hash, delaccount.password.data):
-            uid = current_user.id
+        if check_password_hash(user.password_hash, delaccount.password.data) and current_user.username == user.username:
+            #this ensures that the user's followings are removed from the db
+            #so emails won't break if someone comments on a POW this user follows
             while True:
-                tracking = db.session.query(models.Following).filter_by(userid=uid).first()
+                tracking = db.session.query(models.Following).filter_by(userid=user.id).first()
                 if tracking:
                     db.session.delete(tracking)
                     db.session.commit()
@@ -296,42 +309,49 @@ def deleteaccount():
             db.session.delete(user)
             db.session.commit()
             flash('Your account has been deleted.')
-            #this deletes their all trackings of pows from this account
             return redirect('/')
         else:
             flash('Invalid Username or Password')
     return render_template('deleteaccount.html', delaccount=delaccount)
 
 
-
+#this is the reset password request for when a user is not logged in
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
+    #stops logged in users accessing this page
     if current_user.is_authenticated:
         return redirect('/')
     form = ResetPasswordRequestForm()
+    #if the form validates an email is sent to the user, with assumption the email
     if form.validate_on_submit():
         user = models.User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
-        flash('Check your email for the instructions to reset your password')
-        return redirect(url_for('login'))
+            flash('Check your email for the instructions to reset your password')
+            return redirect(url_for('login'))
+        else:
+            flash('Email is not tied to an account')
     return render_template('requestreset.html', title='Reset Password', form=form)
 
 
+#This is the link the user gets when the token is sent
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    #user does not need to access this page if logged in
     if current_user.is_authenticated:
         return redirect('/')
     user = models.User.verify_reset_password_token(token)
     if not user:
+        #takes the user to the home page if the token is not valid
         return redirect('/')
     form = ResetPasswordForm()
+    #if all information is correct the password updates
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.query(models.User).filter_by(id=user.id).update({models.User.password_hash: user.password_hash})
         db.session.commit()
         flash('Your password has been reset.')
-        return redirect('/')
+        return redirect('/login')
     return render_template('resetpassword.html', form=form)
 
 
