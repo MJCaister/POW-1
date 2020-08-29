@@ -372,7 +372,6 @@ def pow(val):
             for user in tuser:
                 # sends an email to each user who tracks the prisoner
                 send_update_email(user)
-    comments = models.Comment.query.filter(models.Comment.powid == val).all()
     if current_user.is_authenticated:
         track = models.Following.query.filter_by(powid=val, userid=current_user.id).first()
     else:
@@ -388,7 +387,7 @@ def pow(val):
         inor = "in"
         sent = "at this location"
     return render_template("prisoner.html", val=val, prisoner=pow, inor=inor, sent=sent, count=count, form=form,
-                           comments=comments, tracked=track)
+                           tracked=track)
 
 
 @app.route('/track/<int:pow>/<int:user>')
