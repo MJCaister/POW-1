@@ -494,9 +494,9 @@ def userprofile(username):
     # ensures that the current user is accessing only their user page
     if current_user.username == username:
         user = models.User.query.filter_by(username=current_user.username).first_or_404()
-        comments = models.Comment.query.filter_by(userid=user.id)
-        tracked = models.Following.query.filter_by(userid=user.id)
-        return render_template("user.html", user=user, comments=comments, tracked=tracked)
+        #comments = models.Comment.query.filter_by(userid=user.id)
+        #tracked = models.Following.query.filter_by(userid=user.id)
+        return render_template("user.html", user=user)
     else:
         # 403 forbbiden error as they do not have permission
         abort(403)
