@@ -1,15 +1,32 @@
 {% extends 'layout.html' %}
 {% block content %}
 <h2><span>Update Password</span></h2>
-<form class="contact" method="post">
+<h4>
+  {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li><span style="color: red;">{{ message }}</span></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+</h4>
+<form class="" method="post">
   {{passwordform.hidden_tag()}}
   <p>
     {{passwordform.currentpassword.label}}<br>
     {{passwordform.currentpassword(size=32)}}<br>
+  </p>
+  <p>
     {{passwordform.password.label}}<br>
     {{passwordform.password(size=32)}}<br>
+  </p>
+  <p>
     {{passwordform.password2.label}}<br>
     {{passwordform.password2(size=32)}}<br><br>
+  </p>
+  <p>
     {{passwordform.submit()}}
   </p>
 </form>

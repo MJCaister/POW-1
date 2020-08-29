@@ -36,6 +36,7 @@ from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteFo
 import models
 
 
+#Helps flask-login work with the database in loading the user
 @login.user_loader
 def load_user(id):
     return models.User.query.get(int(id))
@@ -46,7 +47,7 @@ def countpows():
     count = models.Prisoner.query.filter().count()
     return count
 
-
+#Searchs the surname, firstname and initial columns of the Prisoner table
 def prisonersearch(val):
     pows = models.Prisoner.query.filter(or_((models.Prisoner.surname.ilike('%{}%'.format(val))),
                                             (models.Prisoner.first_names.ilike('%{}%'.format(val))),
@@ -54,18 +55,21 @@ def prisonersearch(val):
     return pows
 
 
+#Searchs the fullname and initial of the Unit table
 def unitsearch(val):
     units = models.Unit.query.filter(
         or_((models.Unit.fullname.ilike('%{}%'.format(val))), (models.Unit.name.ilike('%{}%'.format(val))))).all()
     return units
 
 
+#Searchs the rank's fullname and iniital
 def ranksearch(val):
     ranks = models.Rank.query.filter(
         or_((models.Rank.name.ilike('%{}%'.format(val))), (models.Rank.initial.ilike('%{}%'.format(val))))).all()
     return ranks
 
 
+#Searches the full date and the inital date
 def capturesearch(val):
     captures = models.Capture.query.filter(
         or_((models.Capture.date.ilike('%{}%'.format(val))), (models.Capture.fulldate.ilike('%{}%'.format(val))))).all()
@@ -92,7 +96,7 @@ def about():
 def search():
     form = SearchForm()
     results = []
-    # ilike returns all that match and is case insensitive
+    #depending on dropdown selection, depends on what functions to search are called
     if form.options.data == 'All':
         p = prisonersearch(form.query.data)
         u = unitsearch(form.query.data)
@@ -226,15 +230,20 @@ def updatepass():
     if passwordform.validate_on_submit():
         # checks the current users password matches the password entered in the form
         if current_user.check_password(passwordform.currentpassword.data):
-            # gets the current user data in a session
-            user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
-            # generates password hash for the new password
-            user.password_hash = generate_password_hash(passwordform.password.data)
-            db.session.add(user)
-            db.session.commit()
-            flash('Password has been updated!')
-            logout_user()
-            return redirect(url_for('login'))
+            if current_user.check_password(passwordform.password.data):
+                flash('Cannot update password to current password')
+            else:
+                # gets the current user data in a session
+                user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
+                # generates password hash for the new password
+                user.password_hash = generate_password_hash(passwordform.password.data)
+                db.session.add(user)
+                db.session.commit()
+                flash('Password has been updated!')
+                logout_user()
+                return redirect(url_for('login'))
+        else:
+            flash('Incorrect Password')
     return render_template('updatepass.html', passwordform=passwordform)
 
 
@@ -244,12 +253,21 @@ def updateemail():
     emailform = EmailUpdate()
     if emailform.validate_on_submit():
         if current_user.check_password(emailform.password.data) and current_user.email == emailform.currentemail.data:
-            user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
-            user.email = emailform.email.data
-            db.session.add(user)
-            db.session.commit()
-            logout_user()
-            return redirect(url_for('login'))
+            if current_user.email == emailform.email.data:
+                flash('You cannot update to current email')
+            else:
+                user = models.User.query.filter_by(email=emailform.email.data).first()
+                if user:
+                    flash('This email is already tied to a different account')
+                else:
+                    user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
+                    user.email = emailform.email.data
+                    db.session.add(user)
+                    db.session.commit()
+                    logout_user()
+                    return redirect(url_for('login'))
+        else:
+            flash('Invalid email or password')
     return render_template('updateemail.html', emailform=emailform)
 
 
@@ -263,15 +281,23 @@ def logout():
 @app.route('/delete_account', methods=['GET', 'POST'])
 @login_required
 def deleteaccount():
-    user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
     delaccount = DelAccountForm()
-    if delaccount.validate_on_submit() and check_password_hash(current_user.password_hash, delaccount.password.data):
-        db.session.delete(user)
-        db.session.commit()
-        flash('Your account has been deleted.')
-        return redirect('/')
-    else:
-        return render_template('deleteaccount.html', delaccount=delaccount)
+    if delaccount.validate_on_submit():
+        user = db.session.query(models.User).filter_by(username=delaccount.username.data).first_or_404()
+        if check_password_hash(user.password_hash, delaccount.password.data):
+            uid = current_user.id
+            db.session.delete(user)
+            db.session.commit()
+            flash('Your account has been deleted.')
+            #this deletes their all trackings of pows from this account
+            tracking = db.session.query(models.Following).filter_by(userid=uid).all()
+            db.session.delete(tracking)
+            db.session.commit()
+            return redirect('/')
+        else:
+            flash('Invalid Username or Password')
+    return render_template('deleteaccount.html', delaccount=delaccount)
+
 
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])
@@ -317,14 +343,14 @@ def pow(val):
         db.session.add(comment)
         db.session.commit()
         # checks to see if any user tracks this prisoner
-        tuser = models.UserPrisoner.query.filter_by(powid=val).all()
+        tuser = models.Following.query.filter_by(powid=val).all()
         if tuser:
             for user in tuser:
                 # sends an email to each user who tracks the prisoner
                 send_update_email(user)
     comments = models.Comment.query.filter(models.Comment.powid == val).all()
     if current_user.is_authenticated:
-        track = models.UserPrisoner.query.filter_by(powid=val, userid=current_user.id).first()
+        track = models.Following.query.filter_by(powid=val, userid=current_user.id).first()
     else:
         track = None
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
@@ -345,9 +371,9 @@ def pow(val):
 @login_required
 def trackprisoner(pow, user):
     if current_user.id == user:
-        test = models.UserPrisoner.query.filter_by(userid=user, powid=pow).first()
+        test = models.Following.query.filter_by(userid=user, powid=pow).first()
         if test is None:
-            track = models.UserPrisoner(powid=pow, userid=user)
+            track = models.Following(powid=pow, userid=user)
             db.session.add(track)
             db.session.commit()
         else:
@@ -360,8 +386,8 @@ def trackprisoner(pow, user):
 @app.route('/deltrack/<int:pow>')
 @login_required
 def deletetracking(pow):
-    track = db.session.query(models.UserPrisoner).filter(
-        models.UserPrisoner.powid == pow and models.UserPrisoner.userid == current_user.id).first()
+    track = db.session.query(models.Following).filter(
+        models.Following.powid == pow and models.Following.userid == current_user.id).first()
     if track is not None:
         db.session.delete(track)
         db.session.commit()
@@ -469,7 +495,7 @@ def userprofile(username):
     if current_user.username == username:
         user = models.User.query.filter_by(username=current_user.username).first_or_404()
         comments = models.Comment.query.filter_by(userid=user.id)
-        tracked = models.UserPrisoner.query.filter_by(userid=user.id)
+        tracked = models.Following.query.filter_by(userid=user.id)
         return render_template("user.html", user=user, comments=comments, tracked=tracked)
     else:
         # 403 forbbiden error as they do not have permission

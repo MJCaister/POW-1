@@ -1,7 +1,18 @@
 {% extends 'layout.html' %}
 {% block content %}
 <h2><span>Delete Account</span></h2>
-<h3>Please login to delete your account.</h3>
+<h4>Please login to delete your account.</h4>
+<h4>
+  {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li><span style="color: red;">{{ message }}</span></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+</h4>
 <form class="" method="post">
   {{delaccount.hidden_tag()}}
   <p>

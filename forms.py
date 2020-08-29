@@ -60,12 +60,6 @@ class EmailUpdate(FlaskForm):
     email = StringField('New Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Update Email')
 
-    def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
-        if user is not None:
-            raise ValidationError(
-                'Someone already has an account with this email, please use an alternative email address.')
-
 
 class DelAccountForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
