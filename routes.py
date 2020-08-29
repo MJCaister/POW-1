@@ -525,3 +525,7 @@ def inject_contact():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html")
+
+@app.errorhandler(403)
+def forbidden_page(e):
+    return render_template("403.html")
