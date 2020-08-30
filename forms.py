@@ -4,13 +4,13 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from models import User
 
 
-#Comment Form on prisoner.html
+# Comment Form on prisoner.html
 class CommentForm(FlaskForm):
     comment = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField("Post Comment")
 
 
-#Search form on browse.html
+# Search form on browse.html
 class SearchForm(FlaskForm):
     query = StringField('Query', validators=[DataRequired()])
     options = SelectField('Refine Search', choices=[('All', 'All'), ('Prisoner', 'Prisoner'),
@@ -19,7 +19,7 @@ class SearchForm(FlaskForm):
     submit = SubmitField('🔍')
 
 
-#Login form on login.html
+# Login form on login.html
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -27,7 +27,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Sign In')
 
 
-#Register account form on register.html
+# Register account form on register.html
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -36,20 +36,20 @@ class RegistrationForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
 
-    #this checks the username is not within the db
+    # this checks the username is not within the db
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
 
-    #checks the email is not already within the database
+    # checks the email is not already within the database
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
 
 
-#Update Password form for updatepass.html
+# Update Password form for updatepass.html
 class PasswordUpdate(FlaskForm):
     currentpassword = PasswordField('Current Password', validators=[DataRequired()])
     password = PasswordField('New Password', validators=[DataRequired()])
@@ -57,7 +57,7 @@ class PasswordUpdate(FlaskForm):
     submit = SubmitField('Update Password')
 
 
-#Update email form for updateemail.html
+# Update email form for updateemail.html
 class EmailUpdate(FlaskForm):
     currentemail = StringField('Current Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -65,20 +65,20 @@ class EmailUpdate(FlaskForm):
     submit = SubmitField('Update Email')
 
 
-#Delete account form on deleteaccount.html
+# Delete account form on deleteaccount.html
 class DelAccountForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Delete Account')
 
 
-#Reset Password Request for requestreset.html
+# Reset Password Request for requestreset.html
 class ResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Request Password Reset')
 
 
-#Reset Password form for resetpassword.html
+# Reset Password form for resetpassword.html
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
@@ -86,7 +86,7 @@ class ResetPasswordForm(FlaskForm):
     submit = SubmitField('Request Password Reset')
 
 
-#Contact form in footer.html displaying on all pages.
+# Contact form in footer.html displaying on all pages.
 class ContactForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])

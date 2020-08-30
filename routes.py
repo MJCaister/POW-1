@@ -30,13 +30,13 @@ mail = Mail(app)
 login = LoginManager(app)
 login.login_view = 'login'
 
-#imports moved down to avoid circle importing
+# imports moved down to avoid circle importing
 from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, ContactForm, PasswordUpdate, \
     EmailUpdate, DelAccountForm, ResetPasswordRequestForm, ResetPasswordForm
 import models
 
 
-#Helps flask-login work with the database in loading the user
+# Helps flask-login work with the database in loading the user
 @login.user_loader
 def load_user(id):
     return models.User.query.get(int(id))
@@ -47,7 +47,8 @@ def countpows():
     count = models.Prisoner.query.filter().count()
     return count
 
-#Searchs the surname, firstname and initial columns of the Prisoner table
+
+# Searchs the surname, firstname and initial columns of the Prisoner table
 def prisonersearch(val):
     pows = models.Prisoner.query.filter(or_((models.Prisoner.surname.ilike('%{}%'.format(val))),
                                             (models.Prisoner.first_names.ilike('%{}%'.format(val))),
@@ -58,7 +59,7 @@ def prisonersearch(val):
         return None
 
 
-#Searchs the fullname and initial of the Unit table
+# Searchs the fullname and initial of the Unit table
 def unitsearch(val):
     units = models.Unit.query.filter(
         or_((models.Unit.fullname.ilike('%{}%'.format(val))), (models.Unit.name.ilike('%{}%'.format(val))))).all()
@@ -68,7 +69,7 @@ def unitsearch(val):
         return None
 
 
-#Searchs the rank's fullname and iniital
+# Searchs the rank's fullname and iniital
 def ranksearch(val):
     ranks = models.Rank.query.filter(
         or_((models.Rank.name.ilike('%{}%'.format(val))), (models.Rank.initial.ilike('%{}%'.format(val))))).all()
@@ -78,7 +79,7 @@ def ranksearch(val):
         return None
 
 
-#Searches the full date and the inital date
+# Searches the full date and the inital date
 def capturesearch(val):
     captures = models.Capture.query.filter(
         or_((models.Capture.date.ilike('%{}%'.format(val))), (models.Capture.fulldate.ilike('%{}%'.format(val))))).all()
@@ -103,19 +104,19 @@ def about():
     return render_template("about.html", number=count)
 
 
-#Browse and search page
+# Browse and search page
 @app.route('/browse')
 def browse():
     form = SearchForm()
     return render_template("browse.html", searchform=form)
 
 
-#This is the results of the search page
+# This is the results of the search page
 @app.route('/records', methods=['POST'])
 def search():
     form = SearchForm()
     results = []
-    #depending on dropdown selection, depends on what functions to search are called
+    # depending on dropdown selection, depends on what functions to search are called
     if form.options.data == 'All':
         p = prisonersearch(form.query.data)
         u = unitsearch(form.query.data)
@@ -124,7 +125,7 @@ def search():
         return render_template('mixedresults.html', p=p, c=c, u=u, r=r, search=form.query.data)
     elif form.options.data == 'Prisoner':
         r = prisonersearch(form.query.data)
-        #checks for if data is returned
+        # checks for if data is returned
         if r == None:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
@@ -139,7 +140,7 @@ def search():
         if r == None:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
-            #To achieve the 3 Coloums split of data, results are split through 3 lists
+            # To achieve the 3 Coloums split of data, results are split through 3 lists
             r1 = r[::3]
             r2 = r[1::3]
             r3 = r[2::3]
@@ -149,7 +150,7 @@ def search():
         if r == None:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
-            #To achieve the 3 Coloums split of data, results are split through 3 lists
+            # To achieve the 3 Coloums split of data, results are split through 3 lists
             c1 = r[::3]
             c2 = r[1::3]
             c3 = r[2::3]
@@ -171,7 +172,7 @@ def search():
 @app.route('/rank')
 def ranks():
     ranks = models.Rank.query.filter().all()
-    #list splicing for 3 coloum split
+    # list splicing for 3 coloum split
     r1 = ranks[::3]
     r2 = ranks[1::3]
     r3 = ranks[2::3]
@@ -182,7 +183,7 @@ def ranks():
 @app.route('/unit')
 def units():
     units = models.Unit.query.filter().all()
-    #list splicing for 3 column data split
+    # list splicing for 3 column data split
     u1 = units[::3]
     u2 = units[1::3]
     u3 = units[2::3]
@@ -193,7 +194,7 @@ def units():
 @app.route('/capture')
 def capture():
     capture = models.Capture.query.filter().all()
-    #list splicing for 3 column data split
+    # list splicing for 3 column data split
     c1 = capture[::3]
     c2 = capture[1::3]
     c3 = capture[2::3]
@@ -215,10 +216,10 @@ def login():
             flash('Invalid username or password')
             return render_template('login.html', form=form)
         login_user(user, remember=form.remember_me.data)
-        #this gets the next page information if coming from a login required page
+        # this gets the next page information if coming from a login required page
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            #sets next page to be user profile if there's no next defined
+            # sets next page to be user profile if there's no next defined
             next_page = url_for('userprofile', username=current_user.username)
         return redirect(next_page)
     return render_template("login.html", form=form)
@@ -227,12 +228,12 @@ def login():
 # register account page
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    #user cannot register if already logged in
+    # user cannot register if already logged in
     if current_user.is_authenticated:
         return redirect('/')
     form = RegistrationForm()
     if form.validate_on_submit():
-        #creates and commits the database entry
+        # creates and commits the database entry
         user = models.User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
@@ -267,13 +268,13 @@ def updatepass():
     return render_template('updatepass.html', passwordform=passwordform)
 
 
-#Updates the user's email in the db
+# Updates the user's email in the db
 @app.route('/update_email', methods=['GET', 'POST'])
 @login_required
 def updateemail():
     emailform = EmailUpdate()
     if emailform.validate_on_submit():
-        #checks that the user has entered all details correctly
+        # checks that the user has entered all details correctly
         if current_user.check_password(emailform.password.data) and current_user.email == emailform.currentemail.data:
             if current_user.email == emailform.email.data:
                 flash('You cannot update to current email')
@@ -282,7 +283,7 @@ def updateemail():
                 if user:
                     flash('This email is already tied to a different account')
                 else:
-                    #if all info is matching and the new email is allowed, it'll update the database
+                    # if all info is matching and the new email is allowed, it'll update the database
                     user = db.session.query(models.User).filter_by(username=current_user.username).first_or_404()
                     user.email = emailform.email.data
                     db.session.add(user)
@@ -301,17 +302,17 @@ def logout():
     return redirect('/')
 
 
-#Delete Account URL
+# Delete Account URL
 @app.route('/delete_account', methods=['GET', 'POST'])
 @login_required
 def deleteaccount():
     delaccount = DelAccountForm()
     if delaccount.validate_on_submit():
-        #checks the user info is in the database and is correct
+        # checks the user info is in the database and is correct
         user = db.session.query(models.User).filter_by(username=delaccount.username.data).first_or_404()
         if check_password_hash(user.password_hash, delaccount.password.data) and current_user.username == user.username:
-            #this ensures that the user's followings are removed from the db
-            #so emails won't break if someone comments on a POW this user follows
+            # this ensures that the user's followings are removed from the db
+            # so emails won't break if someone comments on a POW this user follows
             while True:
                 tracking = db.session.query(models.Following).filter_by(userid=user.id).first()
                 if tracking:
@@ -328,14 +329,14 @@ def deleteaccount():
     return render_template('deleteaccount.html', delaccount=delaccount)
 
 
-#this is the reset password request for when a user is not logged in
+# this is the reset password request for when a user is not logged in
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
-    #stops logged in users accessing this page
+    # stops logged in users accessing this page
     if current_user.is_authenticated:
         return redirect('/')
     form = ResetPasswordRequestForm()
-    #if the form validates an email is sent to the user, with assumption the email
+    # if the form validates an email is sent to the user, with assumption the email
     if form.validate_on_submit():
         user = models.User.query.filter_by(email=form.email.data).first()
         if user:
@@ -347,18 +348,18 @@ def reset_password_request():
     return render_template('requestreset.html', title='Reset Password', form=form)
 
 
-#This is the link the user gets when the token is sent
+# This is the link the user gets when the token is sent
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    #user does not need to access this page if logged in
+    # user does not need to access this page if logged in
     if current_user.is_authenticated:
         return redirect('/')
     user = models.User.verify_reset_password_token(token)
     if not user:
-        #takes the user to the home page if the token is not valid
+        # takes the user to the home page if the token is not valid
         return redirect('/')
     form = ResetPasswordForm()
-    #if all information is correct the password updates
+    # if all information is correct the password updates
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.query(models.User).filter_by(id=user.id).update({models.User.password_hash: user.password_hash})
@@ -403,13 +404,13 @@ def pow(val):
                            tracked=track)
 
 
-#This adds the user and pow to the following db
+# This adds the user and pow to the following db
 @app.route('/track/<int:pow>/<int:user>')
 @login_required
 def trackprisoner(pow, user):
-    #checks that the user is allowed to access this URL
+    # checks that the user is allowed to access this URL
     if current_user.id == user:
-        #checks that the user is not already following the POW
+        # checks that the user is not already following the POW
         test = models.Following.query.filter_by(userid=user, powid=pow).first()
         if test is None:
             track = models.Following(powid=pow, userid=user)
@@ -422,11 +423,11 @@ def trackprisoner(pow, user):
     return redirect('/pow/{}'.format(pow))
 
 
-#This deletes the entry from the following db
+# This deletes the entry from the following db
 @app.route('/deltrack/<int:pow>')
 @login_required
 def deletetracking(pow):
-    #this checks that the user is actually tracking the POW
+    # this checks that the user is actually tracking the POW
     track = db.session.query(models.Following).filter(
         models.Following.powid == pow and models.Following.userid == current_user.id).first()
     if track is not None:
@@ -437,7 +438,7 @@ def deletetracking(pow):
         abort(403)
 
 
-#This deletes the comment
+# This deletes the comment
 @app.route('/delete/<int:user>/<int:com>')
 @login_required
 def delcomment(user, com):
@@ -452,7 +453,7 @@ def delcomment(user, com):
         abort(403)
 
 
-#This displays all POWs who had this rank
+# This displays all POWs who had this rank
 @app.route('/rank/<int:val>')
 def displayranks(val):
     pows = models.Prisoner.query.filter(models.Prisoner.rank == val).all()
@@ -460,7 +461,8 @@ def displayranks(val):
     pows1 = pows[::3]
     pows2 = pows[1::3]
     pows3 = pows[2::3]
-    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, search=rank.name, count=len(pows))
+    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, search=rank.name,
+                           count=len(pows))
 
 
 # Browse Prisoners by Capture Date/location
@@ -471,7 +473,8 @@ def displaycaptures(val):
     pows1 = pows[::3]
     pows2 = pows[1::3]
     pows3 = pows[2::3]
-    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, search=capture.fulldate, count=len(pows))
+    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, search=capture.fulldate,
+                           count=len(pows))
 
 
 # Browse Prisoners by Each Unit
@@ -507,7 +510,8 @@ def results(val):
             pows2 = pows[1::3]
             pows3 = pows[2::3]
             val = val.upper()
-            return render_template("results.html", search=val, count=count, results1=pows1, results2=pows2, results3=pows3)
+            return render_template("results.html", search=val, count=count, results1=pows1, results2=pows2,
+                                   results3=pows3)
 
 
 # user profile page
@@ -517,15 +521,15 @@ def userprofile(username):
     # ensures that the current user is accessing only their user page
     if current_user.username == username:
         user = models.User.query.filter_by(username=current_user.username).first_or_404()
-        #comments = models.Comment.query.filter_by(userid=user.id)
-        #tracked = models.Following.query.filter_by(userid=user.id)
+        # comments = models.Comment.query.filter_by(userid=user.id)
+        # tracked = models.Following.query.filter_by(userid=user.id)
         return render_template("user.html", user=user)
     else:
         # 403 forbbiden error as they do not have permission
         abort(403)
 
 
-#This is the URL that handles the contact form validation
+# This is the URL that handles the contact form validation
 @app.route('/contact', methods=['GET', 'POST'])
 def sendcontact():
     contact_form = ContactForm()
@@ -534,7 +538,7 @@ def sendcontact():
     return redirect('')
 
 
-#Makes the Contact form display on all pages
+# Makes the Contact form display on all pages
 @app.context_processor
 def inject_contact():
     contact_form = ContactForm()
@@ -547,10 +551,11 @@ def page_not_found(e):
     return render_template("404.html")
 
 
-#403 Error Handles with custom style
+# 403 Error Handles with custom style
 @app.errorhandler(403)
 def forbidden_page(e):
     return render_template("403.html")
+
 
 @app.errorhandler(405)
 def method_not_allowed(e):

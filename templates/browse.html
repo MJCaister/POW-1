@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
+
 <h2><span>Search</span></h2>
 <div class="searchWrapper">
    <form method="POST" action={{ url_for('search') }}>
@@ -8,6 +9,7 @@
    </form>
    <p>Search via Surname for a Prisoner</p>
  </div>
+
 <h2><span>View by Letter</span></h2>
 <div class="alphabet">
 <a href="/results/a">A</a>
@@ -38,6 +40,5 @@
 <a href="/results/z">Z</a>
 </div>
 <p>Browse by surname initial.</p>
-
 
 {% endblock %}

@@ -4,7 +4,7 @@ from threading import Thread
 import routes
 
 
-#Function that sends the email
+# Function that sends the email
 def send_email(subject, sender, recipients, text_body, html_body):
     msg = Message(subject, sender=sender, recipients=recipients)
     msg.body = text_body
@@ -12,7 +12,7 @@ def send_email(subject, sender, recipients, text_body, html_body):
     routes.mail.send(msg)
 
 
-#This is the Password Reset email that is sent
+# This is the Password Reset email that is sent
 def send_password_reset_email(user):
     token = user.get_reset_password_token()
     send_email('New Zealand P.O.W.s - Reset Your Password',
@@ -24,7 +24,7 @@ def send_password_reset_email(user):
                                          user=user, token=token))
 
 
-#This is the update email sent to users when tracked POW is updated
+# This is the update email sent to users when tracked POW is updated
 def send_update_email(tuser):
     send_email('New Zealand P.O.W.s - Comment On Tracked Prisoner',
                sender=routes.app.config['ADMINS'][0],
@@ -35,7 +35,7 @@ def send_update_email(tuser):
                                          user=tuser, POW=tuser.Prisoner))
 
 
-#This is the email that's sent to the admin email when the contact form is used.
+# This is the email that's sent to the admin email when the contact form is used.
 def send_admin_contact(name, email, message):
     send_email('New Zealand P.O.W.s - Contact Form',
                sender=routes.app.config['ADMINS'][0],

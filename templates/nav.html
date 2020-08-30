@@ -1,4 +1,5 @@
 <nav>
+  <!--Displays the username and logout when user is logged in, if not login and sign up appear-->
   <h4>Welcome {% if current_user.is_authenticated %}
     <a href="/user/{{current_user.username}}">{{current_user.username}}</a>
     {% endif %} | {% if current_user.is_anonymous %}
@@ -13,3 +14,15 @@
     <li><a href="/browse">Search</a></li>
   </ul>
 </nav>
+<h4>
+  <!--This displays any flash messages that the routes have raised, and will be seen on all pages -->
+  {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li><span style="color: red;">{{ message }}</span></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+</h4>

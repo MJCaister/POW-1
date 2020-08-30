@@ -1,17 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
+
 <h2><span>Update Email</span></h2>
-<h4>
-  {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li><span style="color: red;">{{ message }}</span></li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    {% endwith %}
-</h4>
 <form class="" method="post">
   {{emailform.hidden_tag()}}
   <p>
@@ -28,4 +18,5 @@
   {{emailform.submit()}}
   </p>
 </form>
+
 {% endblock %}

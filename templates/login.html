@@ -4,28 +4,16 @@
 <h2><span>Log In</span></h2>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <h4>
-          {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <ul>
-                    {% for message in messages %}
-                    <li><span style="color: red;">{{ message }}</span></li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            {% endwith %}
-        </h4>
-        <p>
-            {{ form.username.label }}<br>
+        <p> {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
-        </p>
-        <p>
             {{ form.password.label }}<br>
             {{ form.password(size=32) }}<br>
+            {{ form.remember_me() }}
+            {{ form.remember_me.label }}<br><br>
+            {{ form.submit() }}
         </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
     </form>
     <p><a href="/reset_password_request">Forgot your password? Click Here to reset it!</a></p>
     <p><a href="/register">Don't have an account? Click here to go register!</a></p>
+
 {% endblock %}

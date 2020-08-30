@@ -1,14 +1,20 @@
 {% extends 'layout.html' %}
 {% block content %}
+
 <h2><span>Results for {{search}}</span></h2>
+
 <h3>Prisoner Results</h3>
+<!-- Checks to see if the search returned results-->
 {% if p is not none %}
+  <!--If there is, then it loops through the results-->
   {% for pow in p %}
     <p><a href="/pow/{{pow.id}}">{{pow.service_number}} - {{pow.Rank.initial}} {{pow.initial}}. {{pow.surname}}</a></p>
   {% endfor %}
 {% else %}
+  <!--If there's no results, then it displays no results-->
   <p>No Results</p>
 {% endif %}
+
 <h3>Unit Results</h3>
 {% if u is not none %}
   {% for r in u %}
@@ -17,6 +23,7 @@
 {% else %}
 <p>No Results</p>
 {% endif %}
+
 <h3>Rank Results</h3>
 {% if r is not none %}
   {% for r in r %}
@@ -25,6 +32,7 @@
 {% else %}
   <p>No Results</p>
 {% endif %}
+
 <h3>Capture Results</h3>
 {% if c is not none %}
   {% for r in c %}
@@ -33,4 +41,5 @@
 {% else %}
   <p>No Results</p>
 {% endif %}
+
 {% endblock %}

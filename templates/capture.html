@@ -1,10 +1,12 @@
 {% extends 'layout.html' %}
 {% block content %}
+
 <h2><span>Showing Results for {{search}}</span></h2>
 <p>Displaying {{count}} Results.</p>
 
 <div class="row">
   <div class="coloum">
+    <!-- Loops through all POWs within the list-->
     {% for r in c1 %}
       <p><a href="/capture/{{r.id}}">{{r.fulldate}}</a></p>
     {% endfor %}
