@@ -31,7 +31,6 @@ class Prisoner(db.Model):
     initial = db.Column(db.Text)
     capture = db.Column(db.ForeignKey('Capture.id'))
     first_names = db.Column(db.Text)
-    branch = db.Column(db.Text)
     photo = db.Column(db.String)
 
     Capture = db.relationship('Capture', primaryjoin='Prisoner.capture == Capture.id', backref='prisoners')

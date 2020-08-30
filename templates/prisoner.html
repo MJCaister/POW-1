@@ -25,7 +25,7 @@
   </div>
   <div class="powtext">
     <p>{{prisoner.Rank.name}} {% if prisoner.first_names is not none %}{{prisoner.first_names}}{% else %}{{prisoner.initial}}{% endif %} {{prisoner.surname}} served in the
-      {% for u in prisoner.units %} {{u.unit.fullname}} {% endfor %} in the {{prisoner.branch}} of the Second New Zealand
+      {% for u in prisoner.units %} {{u.unit.fullname}} {% endfor %} in the Second New Zealand
       Expeditionary Force (2NZEF). Unfortunately {{inor}} {{prisoner.Capture.date}} he was
       captured along with {{count}} other soldiers {{sent}}.<br></p>
   </div>
