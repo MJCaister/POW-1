@@ -255,6 +255,7 @@ def updatepass():
     return render_template('updatepass.html', passwordform=passwordform)
 
 
+#Updates the user's email in the db
 @app.route('/update_email', methods=['GET', 'POST'])
 @login_required
 def updateemail():
@@ -390,10 +391,13 @@ def pow(val):
                            tracked=track)
 
 
+#This adds the user and pow to the following db
 @app.route('/track/<int:pow>/<int:user>')
 @login_required
 def trackprisoner(pow, user):
+    #checks that the user is allowed to access this URL
     if current_user.id == user:
+        #checks that the user is not already following the POW
         test = models.Following.query.filter_by(userid=user, powid=pow).first()
         if test is None:
             track = models.Following(powid=pow, userid=user)
@@ -406,9 +410,11 @@ def trackprisoner(pow, user):
     return redirect('/pow/{}'.format(pow))
 
 
+#This deletes the entry from the following db
 @app.route('/deltrack/<int:pow>')
 @login_required
 def deletetracking(pow):
+    #this checks that the user is actually tracking the POW
     track = db.session.query(models.Following).filter(
         models.Following.powid == pow and models.Following.userid == current_user.id).first()
     if track is not None:
@@ -419,6 +425,7 @@ def deletetracking(pow):
         abort(403)
 
 
+#This deletes the comment
 @app.route('/delete/<int:user>/<int:com>')
 @login_required
 def delcomment(user, com):
@@ -433,6 +440,7 @@ def delcomment(user, com):
         abort(403)
 
 
+#This displays all POWs who had this rank
 @app.route('/rank/<int:val>')
 def displayranks(val):
     pows = models.Prisoner.query.filter(models.Prisoner.rank == val).all()
@@ -526,6 +534,7 @@ def userprofile(username):
         abort(403)
 
 
+#This is the URL that handles the contact form validation
 @app.route('/contact', methods=['GET', 'POST'])
 def sendcontact():
     contact_form = ContactForm()
@@ -534,6 +543,7 @@ def sendcontact():
     return redirect('')
 
 
+#Makes the Contact form display on all pages
 @app.context_processor
 def inject_contact():
     contact_form = ContactForm()
@@ -545,6 +555,8 @@ def inject_contact():
 def page_not_found(e):
     return render_template("404.html")
 
+
+#403 Error Handles with custom style
 @app.errorhandler(403)
 def forbidden_page(e):
     return render_template("403.html")
