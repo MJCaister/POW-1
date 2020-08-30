@@ -478,27 +478,6 @@ def unitpows(val):
     return render_template("results.html", count=count, search=unit.fullname, results1=r1, results2=r2, results3=r3)
 
 
-@app.route('/unit/<int:val1>/<int:val2>')
-def unitspows(val1, val2):
-    p1 = models.PrisonerUnit.query.filter(models.PrisonerUnit.uid == val1).all()
-    p2 = models.PrisonerUnit.query.filter(models.PrisonerUnit.uid == val2).all()
-    pow1 = []
-    pow2 = []
-    for x in p1:
-        pow1.append(x.prisoner)
-    for y in p2:
-        pow1.append(y.prisoner)
-    print(pow1)
-    pows = []
-    for prisoner in pow1:
-        if prisoner in pow2:
-            pows.append(prisoner)
-    r1 = pows[::3]
-    r2 = pows[1::3]
-    r3 = pows[2::3]
-    return render_template("results.html", search="two unit", results1=r1, results2=r2, results3=r3)
-
-
 # This is called from the browse by letter part of website
 @app.route('/results/<val>')
 def results(val):

@@ -16,7 +16,7 @@
         <td><a href="/rank/{{prisoner.Rank.id}}">Rank: {{prisoner.Rank.name}}</a></td>
       </tr>
       <tr>
-        <td><a href="/unit{% for u in prisoner.units %}/{{u.unit.id}}{% endfor %}">Unit: {% for u in prisoner.units %} {{u.unit.name}} {% endfor %}</a></td>
+        <td>Unit:{% for u in prisoner.units %}<a href="/unit/{{u.unit.id}}"> {{u.unit.name}}</a>{% endfor %}</td>
       </tr>
       <tr>
         <td><a href="/capture/{{prisoner.Capture.id}}">Capture: {{prisoner.Capture.date}}</a></td>
