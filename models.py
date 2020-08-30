@@ -12,6 +12,7 @@ from routes import app
 db = SQLAlchemy()
 
 
+#Capture table, has one to many relationship with Prisoner table
 class Capture(db.Model):
     __tablename__ = 'Capture'
 
@@ -21,6 +22,7 @@ class Capture(db.Model):
     desc = db.Column(db.Text)
 
 
+#Prisoner table
 class Prisoner(db.Model):
     __tablename__ = 'Prisoner'
 
@@ -33,11 +35,15 @@ class Prisoner(db.Model):
     first_names = db.Column(db.Text)
     photo = db.Column(db.String)
 
+    #many to one relationship with Capture table
     Capture = db.relationship('Capture', primaryjoin='Prisoner.capture == Capture.id', backref='prisoners')
+    #many to one relationship with Rank table
     Rank = db.relationship('Rank', primaryjoin='Prisoner.rank == Rank.id', backref='prisoners')
+    #Many to many relationship with Unit table
     units = db.relationship('PrisonerUnit', back_populates='prisoner')
 
 
+#intermediate table for Prisoner and Unit many to many relationship
 class PrisonerUnit(db.Model):
     __tablename__ = 'PrisonerUnit'
 
@@ -49,6 +55,7 @@ class PrisonerUnit(db.Model):
     unit = db.relationship('Unit', back_populates="prisoners")
 
 
+#Rank table, has one to many relationship with Prisoner
 class Rank(db.Model):
     __tablename__ = 'Rank'
 
@@ -58,6 +65,7 @@ class Rank(db.Model):
     desc = db.Column(db.Text)
 
 
+#Unit table
 class Unit(db.Model):
     __tablename__ = 'Unit'
 
@@ -67,9 +75,11 @@ class Unit(db.Model):
     desc = db.Column(db.Text)
     photo = db.Column(db.String)
 
+    #Has many to many relationship with Unit table
     prisoners = db.relationship('PrisonerUnit', back_populates="unit")
 
 
+#User table
 class User(UserMixin, db.Model):
     __tablename__ = 'User'
 
@@ -81,17 +91,22 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
+    #Sets the password hash that's stored in the db
     def set_password(self, password):
+        #password is salted (8 length) and hashed using sha256
         self.password_hash = generate_password_hash(password)
 
+    #generates password hash and checks it against hash stored in db
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    #generates a token to be emailed to the user if they forget their password
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
 
+    #this decodes the token that's emailed
     @staticmethod
     def verify_reset_password_token(token):
         try:
@@ -102,6 +117,7 @@ class User(UserMixin, db.Model):
         return User.query.get(id)
 
 
+#Comment table
 class Comment(db.Model):
     __tablename__ = 'Comment'
 
@@ -115,6 +131,7 @@ class Comment(db.Model):
     Prisoner = db.relationship('Prisoner', primaryjoin='Comment.powid == Prisoner.id', backref='comments')
 
 
+#Following table
 class Following(db.Model):
     __tablename__ = 'Following'
 
@@ -122,5 +139,6 @@ class Following(db.Model):
     powid = db.Column(db.ForeignKey('Prisoner.id'))
     userid = db.Column(db.ForeignKey('User.id'))
 
+    #foreign key many to one relationships to connect the user and prisoner
     User = db.relationship('User', primaryjoin='Following.userid == User.id', backref='followers')
     Prisoner = db.relationship('Prisoner', primaryjoin='Following.powid == Prisoner.id', backref='followers')

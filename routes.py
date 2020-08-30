@@ -31,7 +31,7 @@ login = LoginManager(app)
 login.login_view = 'login'
 
 #imports moved down to avoid circle importing
-from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, DeleteForm, ContactForm, PasswordUpdate, \
+from forms import SearchForm, LoginForm, RegistrationForm, CommentForm, ContactForm, PasswordUpdate, \
     EmailUpdate, DelAccountForm, ResetPasswordRequestForm, ResetPasswordForm
 import models
 

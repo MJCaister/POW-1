@@ -1,8 +1,8 @@
+/** General Styling **/
+
 html {
   background-color: #F7F7F7;
 }
-
-/** Template HTML **/
 
 header {
   color: #726D52;
@@ -26,128 +26,6 @@ footer {
   padding-top: 15px;
   padding-bottom: 15px;
 }
-
-.contact {
-  text-align: left;
-}
-
-/** Home Page CSS **/
-.POWHome {
-  width: 70%;
-  padding-left: 15%;
-  padding-bottom: 50px;
-}
-
-.POWHome img {
-  width: 100%;
-}
-
-.AboutSnip {
-  padding-top: 30px;
-  width: 60%;
-  padding-left: 20%;
-  padding-bottom: 30px;
-}
-
-.photo {
-  width: 70%;
-  padding-left: 15%;
-  padding-bottom: 50px;
-}
-
-.photo img {
-  width: 100%;
-}
-
-.row {
-  width: 100%;
-  padding-top: 20px;
-  display: inline;
-}
-
-.row h2 span {
-  padding-top: 15px;
-}
-
-.row p {
-  padding-left: 10%;
-  padding-right: 10%;
-}
-
-/** Prisoner Page styling**/
-.halfsplit {
-  width: 50%;
-  float: left;
-}
-
-.halfsplit p {
-  text-align: left;
-}
-
-.halfsplit input[type=text] {
-  padding: 15px;
-}
-
-.coloum {
-  width: 33%;
-  float: left;
-}
-
-.coloum p {
-  width: 70%;
-  padding-left: 15%;
-}
-
-/** About Page Styling **/
-.abouttext {
-  width: 60%;
-  float: left;
-}
-
-.abouttext p {
-  padding-top: 30px;
-  padding-left: 30px;
-  text-align: left;
-}
-
-.aboutphoto {
-  width: 40%;
-  float: left;
-  padding-top: 30px;
-}
-
-.aboutphoto img {
-  width: 100%;
-}
-
-
-/** Search Page Styling **/
-.searchWrapper {
-  padding-bottom: 30px;
-}
-
-.alphabet {
-  color: #D9B68C;
-  padding-top: 30px;
-  font-size: 20px;
-}
-
-.powphoto {
-  padding-top: 20;
-  width: 25%;
-  float: left;
-}
-
-.powtext {
-  width: 75%;
-  float: left;
-}
-
-.powtext p {
-  padding: 20px;
-}
-
-/** General Styling **/
 
 h1 {
   color: inherit;
@@ -215,10 +93,6 @@ a:hover {
   color: #D9B68C;
 }
 
-.contact textarea {
-  width: 95%;
-}
-
 textarea {
   width: 100%;
   height: 150px;
@@ -227,4 +101,133 @@ textarea {
 
 p {
   font-family: 'Raleway', sans-serif;
+}
+
+/** Div General Styling **/
+
+.photo {
+  width: 70%;
+  padding-left: 15%;
+  padding-bottom: 50px;
+}
+
+.photo img {
+  width: 100%;
+}
+
+.row {
+  width: 100%;
+  padding-top: 20px;
+  display: inline;
+}
+
+.row h2 span {
+  padding-top: 15px;
+}
+
+.row p {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+.coloum {
+  width: 33%;
+  float: left;
+}
+
+.coloum p {
+  width: 70%;
+  padding-left: 15%;
+}
+
+/** Page Styling CSS **/
+
+/** Contact **/
+.contact {
+  text-align: left;
+}
+
+.contact textarea {
+  width: 95%;
+}
+
+/** Home Page CSS **/
+.POWHome {
+  width: 70%;
+  padding-left: 15%;
+  padding-bottom: 50px;
+}
+
+.POWHome img {
+  width: 100%;
+}
+
+.AboutSnip {
+  padding-top: 30px;
+  width: 60%;
+  padding-left: 20%;
+  padding-bottom: 30px;
+}
+
+/** Prisoner Page styling**/
+.halfsplit {
+  width: 50%;
+  float: left;
+}
+
+.halfsplit p {
+  text-align: left;
+}
+
+.halfsplit input[type=text] {
+  padding: 15px;
+}
+
+/** About Page Styling **/
+.abouttext {
+  width: 60%;
+  float: left;
+}
+
+.abouttext p {
+  padding-top: 30px;
+  padding-left: 30px;
+  text-align: left;
+}
+
+.aboutphoto {
+  width: 40%;
+  float: left;
+  padding-top: 30px;
+}
+
+.aboutphoto img {
+  width: 100%;
+}
+
+/** Search Page Styling **/
+.searchWrapper {
+  padding-bottom: 30px;
+}
+
+.alphabet {
+  color: #D9B68C;
+  padding-top: 30px;
+  font-size: 20px;
+}
+
+/** POW Page **/
+.powphoto {
+  padding-top: 20;
+  width: 25%;
+  float: left;
+}
+
+.powtext {
+  width: 75%;
+  float: left;
+}
+
+.powtext p {
+  padding: 20px;
 }
