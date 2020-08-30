@@ -52,28 +52,40 @@ def prisonersearch(val):
     pows = models.Prisoner.query.filter(or_((models.Prisoner.surname.ilike('%{}%'.format(val))),
                                             (models.Prisoner.first_names.ilike('%{}%'.format(val))),
                                             (models.Prisoner.initial.ilike('%{}%'.format(val))))).all()
-    return pows
+    if pows:
+        return pows
+    else:
+        return None
 
 
 #Searchs the fullname and initial of the Unit table
 def unitsearch(val):
     units = models.Unit.query.filter(
         or_((models.Unit.fullname.ilike('%{}%'.format(val))), (models.Unit.name.ilike('%{}%'.format(val))))).all()
-    return units
+    if units:
+        return units
+    else:
+        return None
 
 
 #Searchs the rank's fullname and iniital
 def ranksearch(val):
     ranks = models.Rank.query.filter(
         or_((models.Rank.name.ilike('%{}%'.format(val))), (models.Rank.initial.ilike('%{}%'.format(val))))).all()
-    return ranks
+    if ranks:
+        return ranks
+    else:
+        return None
 
 
 #Searches the full date and the inital date
 def capturesearch(val):
     captures = models.Capture.query.filter(
         or_((models.Capture.date.ilike('%{}%'.format(val))), (models.Capture.fulldate.ilike('%{}%'.format(val))))).all()
-    return captures
+    if captures:
+        return captures
+    else:
+        return None
 
 
 # Home page route. Returns count info for the about page snippet
@@ -113,7 +125,7 @@ def search():
     elif form.options.data == 'Prisoner':
         r = prisonersearch(form.query.data)
         #checks for if data is returned
-        if len(r) == 0:
+        if r == None:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
             # To achieve the 3 Coloums split of data, results are split through 3 lists
@@ -124,7 +136,7 @@ def search():
                                    results2=results2, results3=results3, count=len(r))
     elif form.options.data == 'Rank':
         r = ranksearch(form.query.data)
-        if len(r) == 0:
+        if r == None:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
             #To achieve the 3 Coloums split of data, results are split through 3 lists
@@ -134,7 +146,7 @@ def search():
         return render_template("ranks.html", ranks=ranks, search=form.query.data, r1=r1, r2=r2, r3=r3, count=len(r))
     elif form.options.data == 'Capture':
         r = capturesearch(form.query.data)
-        if len(r) == 0:
+        if r == None:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
             #To achieve the 3 Coloums split of data, results are split through 3 lists
@@ -145,7 +157,7 @@ def search():
                                c3=c3, count=len(r))
     elif form.options.data == 'Unit':
         r = unitsearch(form.query.data)
-        if len(r) == 0:
+        if r == None:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
         else:
             # To achieve the 3 Coloums split of data, results are split through 3 lists
@@ -539,3 +551,7 @@ def page_not_found(e):
 @app.errorhandler(403)
 def forbidden_page(e):
     return render_template("403.html")
+
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return render_template("405.html")
