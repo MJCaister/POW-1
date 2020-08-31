@@ -9,8 +9,12 @@
         {% if prisoner.photo is not none %}
         <img src="{{prisoner.photo}}"
         alt="{{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}} - Photo">
+        Photo of {{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}}
         {% else %}
-        <img src="{{prisoner.units.unit.photo}}" alt="{{prisoner.units.unit.name}} - Photo">{% endif %}</td>
+        {% for u in prisoner.units %}
+        <img src="{{u.unit.photo}}" alt="{{u.unit.name}} - Photo">
+        Photo of {{u.unit.name}}
+        {% endfor %}{% endif %}</td>
     </tr>
 
     <tr>
@@ -18,7 +22,7 @@
     </tr>
 
     <tr>
-      <td><a href="/rank/{{prisoner.Rank.id}}">Rank: {{prisoner.Rank.name}}</a></td>
+      <td>Rank: <a href="/rank/{{prisoner.Rank.id}}">{{prisoner.Rank.name}}</a></td>
     </tr>
 
       <tr>
@@ -27,7 +31,7 @@
       </tr>
 
       <tr>
-        <td><a href="/capture/{{prisoner.Capture.id}}">Capture: {{prisoner.Capture.date}}</a></td>
+        <td>Capture: <a href="/capture/{{prisoner.Capture.id}}">{{prisoner.Capture.date}}</a></td>
       </tr>
     </table>
   </div>
@@ -37,21 +41,16 @@
       {% for u in prisoner.units %} {{u.unit.fullname}} {% endfor %} in the Second New Zealand
       Expeditionary Force (2NZEF). Unfortunately {{inor}} {{prisoner.Capture.date}} he was
       captured along with {{count}} other soldiers {{sent}}.<br></p>
+      <h3>Rank.</h3>
+      <p>{{prisoner.Rank.desc}}</p>
+      <h3>Unit.</h3>
+      {% for u in prisoner.units %}
+      <p>{{u.unit.desc}}</p>
+      {% endfor %}
+      <h3>Capture.</h3>
+      <p>{{prisoner.Capture.desc}}</p>
   </div>
 </div>
-
-<h3>Rank.</h3>
-<p>{{prisoner.Rank.name}}</p>
-<p>{{prisoner.Rank.desc}}</p>
-<h3>Unit.</h3>
-{% for u in prisoner.units %}
-<p>{{u.unit.name}}</p>
-<p>{{u.unit.fullname}}</p>
-<p>{{u.unit.desc}}</p>
-{% endfor %}
-<h3>Capture.</h3>
-<p>{{prisoner.Capture.date}}</p>
-<p>{{prisoner.Capture.desc}}</p>
 
 <div class="row">
   <h2><span>Comments</span></h2>
@@ -86,20 +85,18 @@
     {% endif %}
   </div>
 
-<div class="halfsplit">
-  <table>
-  <!--Loops through all associated comments-->
-  {% for c in prisoner.comments %}
-    <tr>
-      <p>{{c.User.username}}:
-        <br>{{c.comment}}</p>
-      {% if current_user.username == c.User.username %}
-        <a href="/delete/{{c.User.id}}/{{c.id}}">Delete Comment</a>
-      {% endif %}
-    </tr>
-  {% endfor %}
-  </table>
-</div>
+  <div class="halfsplit">
+    <!--Loops through all associated comments-->
+      {% for c in prisoner.comments %}
+      <p>
+        {{c.User.username}}
+        {% if current_user.username == c.User.username %}
+        <a href="/delete/{{c.User.id}}/{{c.id}}"> - Delete Comment</a> <br>
+        {% endif %}<br>
+        {{c.comment}} <br><br>
+      </p>
+      {% endfor %}
+  </div>
 </div>
 
 {% endblock %}

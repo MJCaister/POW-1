@@ -373,8 +373,7 @@ def reset_password(token):
 @app.route('/pow/<int:val>', methods=['GET', 'POST'])
 def pow(val):
     form = CommentForm()
-    deleteform = DeleteForm()
-    # ensures that the form being submitted is the comment one.
+        # ensures that the form being submitted is the comment one.
     if form.validate_on_submit() and form.comment.data:
         # creates the entry to be added to the database from form data
         comment = models.Comment(comment=form.comment.data, userid=current_user.id, powid=val)
