@@ -6,6 +6,7 @@
     <table>
     <tr>
       <td>
+        <!-- This loop either shows a POW photo, Unit photo or a message saying there's no photo available-->
         {% if prisoner.photo is not none %}
         <img src="{{prisoner.photo}}"
         alt="{{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}} - Photo">
@@ -16,7 +17,7 @@
               <img src="{{u.unit.photo}}" alt="{{u.unit.name}} - Photo">
               Photo of {{u.unit.name}}
             {% else %}
-              No available photo for {{u.unit.name}}
+              No available photo for {{prisoner.initial}}. {{prisoner.surname}} or {{u.unit.name}}
             {% endif %}
           {% endfor %}
         {% endif %}
@@ -48,11 +49,12 @@
       Expeditionary Force (2NZEF). Unfortunately {{inor}} {{prisoner.Capture.date}} he was
       captured along with {{count}} other soldiers {{sent}}.<br></p>
       <h3>Unit.</h3>
+      <!-- This loops through the desciptions for each unit, and shows desc or error message-->
       {% for u in prisoner.units %}
       {% if u.unit.desc is not none %}
-      <p>{{u.unit.desc}}</p>
+        <p>{{u.unit.desc}}</p>
       {% else %}
-      <p>Unfortunately there is no description for {{u.unit.name}} available currently.</p>
+        <p>Unfortunately there is no description for {{u.unit.name}} available currently.</p>
       {% endif %}
       {% endfor %}
   </div>
@@ -95,9 +97,9 @@
     <!--Loops through all associated comments-->
       {% for c in prisoner.comments %}
       <p>
-        {{c.User.username}}
+        <b>{{c.User.username}}</b>
         {% if current_user.username == c.User.username %}
-        <a href="/delete/{{c.User.id}}/{{c.id}}"> - Delete Comment</a> <br>
+        <i><a href="/delete/{{c.User.id}}/{{c.id}}"> - Delete Comment</a></i> <br>
         {% endif %}<br>
         {{c.comment}} <br><br>
       </p>
