@@ -11,10 +11,16 @@
         alt="{{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}} - Photo">
         Photo of {{prisoner.Rank.name}} {{prisoner.initial}}. {{prisoner.surname}}
         {% else %}
-        {% for u in prisoner.units %}
-        <img src="{{u.unit.photo}}" alt="{{u.unit.name}} - Photo">
-        Photo of {{u.unit.name}}
-        {% endfor %}{% endif %}</td>
+          {% for u in prisoner.units %}
+            {% if u.unit.photo is not none %}
+              <img src="{{u.unit.photo}}" alt="{{u.unit.name}} - Photo">
+              Photo of {{u.unit.name}}
+            {% else %}
+              No available photo for {{u.unit.name}}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </td>
     </tr>
 
     <tr>
@@ -41,14 +47,14 @@
       {% for u in prisoner.units %} {{u.unit.fullname}} {% endfor %} in the Second New Zealand
       Expeditionary Force (2NZEF). Unfortunately {{inor}} {{prisoner.Capture.date}} he was
       captured along with {{count}} other soldiers {{sent}}.<br></p>
-      <h3>Rank.</h3>
-      <p>{{prisoner.Rank.desc}}</p>
       <h3>Unit.</h3>
       {% for u in prisoner.units %}
+      {% if u.unit.desc is not none %}
       <p>{{u.unit.desc}}</p>
+      {% else %}
+      <p>Unfortunately there is no description for {{u.unit.name}} available currently.</p>
+      {% endif %}
       {% endfor %}
-      <h3>Capture.</h3>
-      <p>{{prisoner.Capture.desc}}</p>
   </div>
 </div>
 
