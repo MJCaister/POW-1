@@ -56,6 +56,7 @@ def prisonersearch(val):
     if pows:
         return pows
     else:
+        #explain why none required
         return None
 
 
@@ -118,33 +119,33 @@ def search():
     results = []
     # depending on dropdown selection, depends on what functions to search are called
     if form.options.data == 'All':
-        p = prisonersearch(form.query.data)
-        u = unitsearch(form.query.data)
-        r = ranksearch(form.query.data)
-        c = capturesearch(form.query.data)
-        return render_template('mixedresults.html', p=p, c=c, u=u, r=r, search=form.query.data)
+        prisoners = prisonersearch(form.query.data)
+        units = unitsearch(form.query.data)
+        ranks = ranksearch(form.query.data)
+        captures = capturesearch(form.query.data)
+        return render_template('mixedresults.html', prisoners=prisoners, captures=captures, units=units, ranks=ranks, search=form.query.data)
     elif form.options.data == 'Prisoner':
-        r = prisonersearch(form.query.data)
+        prisoners = prisonersearch(form.query.data)
         # checks for if data is returned
-        if r == None:
-            return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
+        if prisoners == None:
+            return render_template("results.html", search=form.query.data, results="No results.", count=len(prisoners))
         else:
             # To achieve the 3 Coloums split of data, results are split through 3 lists
             results1 = r[::3]
             results2 = r[1::3]
             results3 = r[2::3]
             return render_template('results.html', search=form.query.data, results1=results1,
-                                   results2=results2, results3=results3, count=len(r))
+                                   results2=results2, results3=results3, count=len(prisoner))
     elif form.options.data == 'Rank':
-        r = ranksearch(form.query.data)
-        if r == None:
-            return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
+        ranks = ranksearch(form.query.data)
+        if ranks == None:
+            return render_template("results.html", search=form.query.data, results="No results.", count=len(ranks))
         else:
             # To achieve the 3 Coloums split of data, results are split through 3 lists
             r1 = r[::3]
             r2 = r[1::3]
             r3 = r[2::3]
-        return render_template("ranks.html", ranks=ranks, search=form.query.data, r1=r1, r2=r2, r3=r3, count=len(r))
+        return render_template("ranks.html", ranks=ranks, search=form.query.data, r1=r1, r2=r2, r3=r3, count=len(ranks))
     elif form.options.data == 'Capture':
         r = capturesearch(form.query.data)
         if r == None:
@@ -534,6 +535,8 @@ def sendcontact():
     contact_form = ContactForm()
     if contact_form.validate_on_submit() and contact_form.message.data:
         send_admin_contact(contact_form.name.data, contact_form.email.data, contact_form.message.data)
+    flash('Unable to send Contact form, please check all details entered are valid.')
+
     return redirect('')
 
 

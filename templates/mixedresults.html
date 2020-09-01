@@ -5,9 +5,9 @@
 
 <h3>Prisoner Results</h3>
 <!-- Checks to see if the search returned results-->
-{% if p is not none %}
+{% if prisoners is not none %}
   <!--If there is, then it loops through the results-->
-  {% for pow in p %}
+  {% for pow in prisoners %}
     <p><a href="/pow/{{pow.id}}">{{pow.service_number}} - {{pow.Rank.initial}} {{pow.initial}}. {{pow.surname}}</a></p>
   {% endfor %}
 {% else %}
@@ -16,27 +16,27 @@
 {% endif %}
 
 <h3>Unit Results</h3>
-{% if u is not none %}
-  {% for r in u %}
-    <p><a href="/unit/{{r.id}}">{% if r.fullname is not none %}{{r.fullname}}{% else %}{{r.name}}{% endif %}</a></p>
+{% if units is not none %}
+  {% for unit in units %}
+    <p><a href="/unit/{{unit.id}}">{% if unit.fullname is not none %}{{unit.fullname}}{% else %}{{unit.name}}{% endif %}</a></p>
   {% endfor %}
 {% else %}
 <p>No Results</p>
 {% endif %}
 
 <h3>Rank Results</h3>
-{% if r is not none %}
-  {% for r in r %}
-    <p><a href="/rank/{{r.id}}">{% if r.name is not none %}{{r.name}}{% else %}{{r.initial}}{% endif %}</a></p>
+{% if ranks is not none %}
+  {% for rank in ranks %}
+    <p><a href="/rank/{{rank.id}}">{% if rank.name is not none %}{{rank.name}}{% else %}{{rank.initial}}{% endif %}</a></p>
   {% endfor %}
 {% else %}
   <p>No Results</p>
 {% endif %}
 
 <h3>Capture Results</h3>
-{% if c is not none %}
-  {% for r in c %}
-    <p><a href="/capture/{{r.id}}">{{r.fulldate}}</a></p>
+{% if captures is not none %}
+  {% for capture in captures %}
+    <p><a href="/capture/{{capture.id}}">{{capture.fulldate}}</a></p>
   {% endfor %}
 {% else %}
   <p>No Results</p>
