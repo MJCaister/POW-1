@@ -56,7 +56,8 @@ def prisonersearch(val):
     if pows:
         return pows
     else:
-        #explain why none required
+        #Returning None is required as .all() returns an empty list of no results match
+        #To use jinja2 conditions, the none needs to be explictly set
         return None
 
 
@@ -535,8 +536,8 @@ def sendcontact():
     contact_form = ContactForm()
     if contact_form.validate_on_submit() and contact_form.message.data:
         send_admin_contact(contact_form.name.data, contact_form.email.data, contact_form.message.data)
-    flash('Unable to send Contact form, please check all details entered are valid.')
-
+    else:
+        flash('Unable to send Contact form, please check all details entered are valid.')
     return redirect('')
 
 

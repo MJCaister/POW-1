@@ -4,12 +4,19 @@ from threading import Thread
 import routes
 
 
+#Sends the email async
+def send_async_email(app, msg):
+    with app.app_context():
+        routes.mail.send(msg)
+
+
 # Function that sends the email
 def send_email(subject, sender, recipients, text_body, html_body):
     msg = Message(subject, sender=sender, recipients=recipients)
     msg.body = text_body
     msg.html = html_body
-    routes.mail.send(msg)
+    Thread(target=send_async_email, args=(routes.app, msg)).start()
+    #routes.mail.send(msg)
 
 
 # This is the Password Reset email that is sent
