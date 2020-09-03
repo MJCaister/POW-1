@@ -16,7 +16,6 @@ def send_email(subject, sender, recipients, text_body, html_body):
     msg.body = text_body
     msg.html = html_body
     Thread(target=send_async_email, args=(routes.app, msg)).start()
-    #routes.mail.send(msg)
 
 
 # This is the Password Reset email that is sent
