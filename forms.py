@@ -6,7 +6,7 @@ from models import User
 
 # Comment Form on prisoner.html
 class CommentForm(FlaskForm):
-    comment = TextAreaField('Comment', validators=[DataRequired(), Length(max=501, message='Comment exceeds 500 characters')])
+    comment = TextAreaField('Comment', validators=[DataRequired(), Length(max=500, message='Comment exceeds 500 characters')])
     submit = SubmitField("Post Comment")
 
 
@@ -29,7 +29,7 @@ class LoginForm(FlaskForm):
 
 # Register account form on register.html
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired(), Length(max=32, message="Username cannot exceed 32 characters")])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
