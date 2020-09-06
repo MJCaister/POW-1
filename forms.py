@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
 from models import User
 
 
 # Comment Form on prisoner.html
 class CommentForm(FlaskForm):
-    comment = TextAreaField('Comment', validators=[DataRequired()])
+    comment = TextAreaField('Comment', validators=[DataRequired(), Length(max=501, message='Comment exceeds 500 characters')])
     submit = SubmitField("Post Comment")
 
 
