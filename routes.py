@@ -131,77 +131,46 @@ def search():
         if prisoners == None:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(prisoners))
         else:
-            # To achieve the 3 Coloums split of data, results are split through 3 lists
-            results1 = r[::3]
-            results2 = r[1::3]
-            results3 = r[2::3]
-            return render_template('results.html', search=form.query.data, results1=results1,
-                                   results2=results2, results3=results3, count=len(prisoner))
+            return render_template('results.html', search=form.query.data, prisoners=prisoners, count=len(prisoners))
     elif form.options.data == 'Rank':
         ranks = ranksearch(form.query.data)
         if ranks == None:
             return render_template("results.html", search=form.query.data, results="No results.", count=len(ranks))
         else:
-            # To achieve the 3 Coloums split of data, results are split through 3 lists
-            r1 = r[::3]
-            r2 = r[1::3]
-            r3 = r[2::3]
-        return render_template("ranks.html", ranks=ranks, search=form.query.data, r1=r1, r2=r2, r3=r3, count=len(ranks))
+            return render_template("ranks.html", ranks=ranks, search=form.query.data, count=len(ranks))
     elif form.options.data == 'Capture':
-        r = capturesearch(form.query.data)
-        if r == None:
-            return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
+        captures = capturesearch(form.query.data)
+        if captures == None:
+            return render_template("results.html", search=form.query.data, results="No results.", count=len(captures))
         else:
-            # To achieve the 3 Coloums split of data, results are split through 3 lists
-            c1 = r[::3]
-            c2 = r[1::3]
-            c3 = r[2::3]
-        return render_template("capture.html", capture=capture, search=form.query.data, c1=c1, c2=c2,
-                               c3=c3, count=len(r))
+            return render_template("capture.html", search=form.query.data, captures=captures, count=len(captures))
     elif form.options.data == 'Unit':
-        r = unitsearch(form.query.data)
-        if r == None:
-            return render_template("results.html", search=form.query.data, results="No results.", count=len(r))
+        units = unitsearch(form.query.data)
+        if units == None:
+            return render_template("results.html", search=form.query.data, results="No results.", count=len(units))
         else:
-            # To achieve the 3 Coloums split of data, results are split through 3 lists
-            u1 = r[::3]
-            u2 = r[1::3]
-            u3 = r[2::3]
-        return render_template("units.html", search=form.query.data, u1=u1, u2=u2, u3=u3, count=len(r))
+            return render_template("units.html", search=form.query.data, units=units, count=len(units))
 
 
 # displays all the ranks in the Rank table
 @app.route('/rank')
 def ranks():
     ranks = models.Rank.query.filter().all()
-    # list splicing for 3 coloum split
-    r1 = ranks[::3]
-    r2 = ranks[1::3]
-    r3 = ranks[2::3]
-    return render_template("ranks.html", ranks=ranks, search="All Ranks", r1=r1, r2=r2, r3=r3)
+    return render_template("ranks.html", ranks=ranks, search="All Ranks")
 
 
 # displays all units in Unit table
 @app.route('/unit')
 def units():
     units = models.Unit.query.filter().all()
-    # list splicing for 3 column data split
-    u1 = units[::3]
-    u2 = units[1::3]
-    u3 = units[2::3]
-    return render_template("units.html", search="All Units", u1=u1, u2=u2, u3=u3)
+    return render_template("units.html", search="All Units", units=units, count=len(units))
 
 
 # displays all capture dates and locations
 @app.route('/capture')
 def capture():
-    capture = models.Capture.query.filter().all()
-    # list splicing for 3 column data split
-    c1 = capture[::3]
-    c2 = capture[1::3]
-    c3 = capture[2::3]
-    return render_template("capture.html", capture=capture, search="All Capture Dates and Locations", c1=c1, c2=c2,
-                           c3=c3)
+    captures = models.Capture.query.filter().all()
+    return render_template("capture.html", search="All Capture Dates and Locations", captures=captures, count=len(captures))
 
 
 # login page
@@ -459,11 +428,7 @@ def delcomment(user, com):
 def displayranks(val):
     pows = models.Prisoner.query.filter(models.Prisoner.rank == val).all()
     rank = models.Rank.query.filter(models.Rank.id == val).first_or_404()
-    pows1 = pows[::3]
-    pows2 = pows[1::3]
-    pows3 = pows[2::3]
-    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, search=rank.name,
-                           count=len(pows))
+    return render_template('results.html', prisoners=pows, search=rank.name, count=len(pows))
 
 
 # Browse Prisoners by Capture Date/location
@@ -471,27 +436,19 @@ def displayranks(val):
 def displaycaptures(val):
     pows = models.Prisoner.query.filter(models.Prisoner.capture == val).all()
     capture = models.Capture.query.filter(models.Capture.id == val).first_or_404()
-    pows1 = pows[::3]
-    pows2 = pows[1::3]
-    pows3 = pows[2::3]
-    return render_template('results.html', results1=pows1, results2=pows2, results3=pows3, search=capture.fulldate,
-                           count=len(pows))
+    return render_template('results.html', prisoners=pows, search=capture.fulldate, count=len(pows))
 
 
 # Browse Prisoners by Each Unit
 @app.route('/unit/<int:val>')
 def unitpows(val):
     prisoners = models.PrisonerUnit.query.filter(models.PrisonerUnit.uid == val).all()
-    count = len(prisoners)
     unit = models.Unit.query.filter_by(id=val).first_or_404()
     print(prisoners)
     pows = []
     for x in prisoners:
         pows.append(x.prisoner)
-    r1 = pows[::3]
-    r2 = pows[1::3]
-    r3 = pows[2::3]
-    return render_template("results.html", count=count, search=unit.fullname, results1=r1, results2=r2, results3=r3)
+    return render_template("results.html", count=len(prisoners), search=unit.fullname, prisoners=pows)
 
 
 # This is called from the browse by letter part of website
@@ -507,12 +464,8 @@ def results(val):
         else:
             count = len(pows)
             # For better display of results I split the results over 3 tables. For resizing purposes it also returns all results incase screen size is too small for 3 table display
-            pows1 = pows[::3]
-            pows2 = pows[1::3]
-            pows3 = pows[2::3]
             val = val.upper()
-            return render_template("results.html", search=val, count=count, results1=pows1, results2=pows2,
-                                   results3=pows3)
+            return render_template("results.html", search=val, count=count, prisoners=pows)
 
 
 # user profile page

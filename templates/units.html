@@ -3,22 +3,12 @@
 
 <h2><span>Showing Results for {{search}}</span></h2>
 <p>Displaying {{count}} Results.</p>
-<div class="row">
-  <div class="coloum">
-    {% for r in u1 %}
-      <p><a href="/unit/{{r.id}}">{% if r.fullname is not none %}{{r.fullname}}{% else %}{{r.name}}{% endif %}</a></p>
-    {% endfor %}
-  </div>
-  <div class="coloum">
-    {% for r in u2 %}
-      <p><a href="/unit/{{r.id}}">{% if r.fullname is not none %}{{r.fullname}}{% else %}{{r.name}}{% endif %}</a></p>
-    {% endfor %}
-  </div>
-  <div class="coloum">
-    {% for r in u3 %}
-      <p><a href="/unit/{{r.id}}">{% if r.fullname is not none %}{{r.fullname}}{% else %}{{r.name}}{% endif %}</a></p>
-    {% endfor %}
-  </div>
+<div class="auto-columns">
+  {% for unit in units %}
+    <div class="item">
+      <p><a href="/unit/{{unit.id}}">{% if unit.fullname is not none %}{{unit.fullname}}{% else %} {{unit.name}} {% endif %}</a></p>
+    </div>
+  {% endfor %}
 </div>
 
 {% endblock %}

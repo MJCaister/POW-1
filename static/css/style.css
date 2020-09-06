@@ -105,6 +105,14 @@ p {
 
 /** Div General Styling **/
 
+.auto-columns {
+  column-count: 4;
+}
+
+.item {
+  padding-right: 20px;
+}
+
 .wrapper {
   height: 100%;
 }

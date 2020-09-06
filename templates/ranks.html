@@ -3,21 +3,12 @@
 <h2><span>Showing Results for {{search}}</span></h2>
 <p>Displaying {{count}} Results.</p>
 
-<div class="row">
-  <div class="coloum">
-    {% for r in r1 %}
-    <p><a href="/rank/{{r.id}}">{% if r.name is not none %}{{r.name}}{% else %}{{r.initial}}{% endif %}</a></p>
-    {% endfor %}
+<div class="auto-columns">
+  {% for rank in ranks %}
+  <div class="item">
+    <p><a href="/rank/{{rank.id}}">{% if rank.name is not none %}{{rank.name}} {% else %} {{rank.inital}}{% endif %}</a></p>
   </div>
-  <div class="coloum">
-    {% for r in r2 %}
-    <p><a href="/rank/{{r.id}}">{% if r.name is not none %}{{r.name}}{% else %}{{r.initial}}{% endif %}</a></p>
-    {% endfor %}
-  </div>
-  <div class="coloum">
-    {% for r in r3 %}
-    <p><a href="/rank/{{r.id}}">{% if r.name is not none %}{{r.name}}{% else %}{{r.initial}}{% endif %}</a></p>
-    {% endfor %}
-  </div>
+  {% endfor %}
 </div>
+
 {% endblock %}

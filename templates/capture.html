@@ -4,23 +4,12 @@
 <h2><span>Showing Results for {{search}}</span></h2>
 <p>Displaying {{count}} Results.</p>
 
-<div class="row">
-  <div class="coloum">
-    <!-- Loops through all POWs within the list-->
-    {% for r in c1 %}
-      <p><a href="/capture/{{r.id}}">{{r.fulldate}}</a></p>
-    {% endfor %}
-  </div>
-  <div class="coloum">
-    {% for r in c2 %}
-      <p><a href="/capture/{{r.id}}">{{r.fulldate}}</a></p>
-    {% endfor %}
-  </div>
-  <div class="coloum">
-    {% for r in c3 %}
-      <p><a href="/capture/{{r.id}}">{{r.fulldate}}</a></p>
-    {% endfor %}
-  </div>
+<div class="auto-columns">
+  {% for capture in captures %}
+    <div class="item">
+      <p><a href="/capture/{{capture.id}}">{{capture.fulldate}}</a></p>
+    </div>
+  {% endfor %}
 </div>
 
 {% endblock %}
