@@ -343,7 +343,7 @@ def reset_password(token):
 # Induvidual POW info page, catches dynamic url only if int since I'm using ids for links
 @app.route('/pow/<int:val>', methods=['GET', 'POST'])
 def pow(val):
-    form = CommentForm()
+    form = CommentForm(comment="")
         # ensures that the form being submitted is the comment one.
     if form.validate_on_submit() and form.comment.data:
         # creates the entry to be added to the database from form data
