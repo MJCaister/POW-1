@@ -347,7 +347,7 @@ def pow(val):
         # ensures that the form being submitted is the comment one.
     if form.validate_on_submit() and form.comment.data:
         # creates the entry to be added to the database from form data
-        comment = models.Comment(comment=form.comment.data, userid=current_user.id, powid=val)
+        comment = models.Comment(comment=form.comment.data, userid=current_user.id, powid=val, username=current_user.username)
         db.session.add(comment)
         db.session.commit()
         # checks to see if any user tracks this prisoner

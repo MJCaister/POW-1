@@ -125,6 +125,7 @@ class Comment(db.Model):
     comment = db.Column(db.String(500))
     userid = db.Column(db.ForeignKey('User.id'))
     powid = db.Column(db.ForeignKey('Prisoner.id'))
+    username = db.Column(db.Text(32))
 
     # forgein key many to one relationships
     User = db.relationship('User', primaryjoin='Comment.userid == User.id', backref='comments')
