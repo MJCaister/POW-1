@@ -72,7 +72,7 @@
       <form action="" method="post">
         {{ form.hidden_tag() }}
         <p>{{ form.comment.label }}<br>
-          {{ form.comment(size=100) }}<br>
+          {{ form.comment(size=100, value="") }}<br>
           {% for error in form.comment.errors %}
           <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
@@ -97,8 +97,8 @@
     <!--Loops through all associated comments-->
       {% for c in prisoner.comments %}
       <p>
-        <b>{{c.User.username}}</b>
-        {% if current_user.username == c.User.username %}
+        <b>{{c.username}}</b>
+        {% if current_user.username == c.username %}
         <i><a href="/delete/{{c.User.id}}/{{c.id}}"> - Delete Comment</a></i> <br>
         {% endif %}<br>
         {{c.comment}} <br><br>
