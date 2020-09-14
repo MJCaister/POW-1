@@ -95,7 +95,6 @@ def capturesearch(val):
 @app.route('/')
 def home():
     count = countpows()
-    # print(request.META.get('HTTP_REFERER'))
     return render_template("home.html", number=count)
 
 
@@ -351,9 +350,9 @@ def pow(val):
         db.session.add(comment)
         db.session.commit()
         # checks to see if any user tracks this prisoner
-        tuser = models.Following.query.filter_by(powid=val).all()
-        if tuser:
-            for user in tuser:
+        tracking_users = models.Following.query.filter_by(powid=val).all()
+        if tracking_users:
+            for user in tracking_users:
                 # sends an email to each user who tracks the prisoner
                 send_update_email(user)
     if current_user.is_authenticated:
@@ -363,7 +362,7 @@ def pow(val):
     pow = models.Prisoner.query.filter_by(id=val).first_or_404()
     capture = pow.Capture
     count = models.Prisoner.query.filter(models.Prisoner.capture == capture.id).count()
-    # grammar for prisoner page
+    # gets the grammar for the description paragrahp
     if isinstance(capture.date, str) == True:
         inor = "on"
         sent = "on this date"
