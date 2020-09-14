@@ -16,7 +16,7 @@ class SearchForm(FlaskForm):
     options = SelectField('Refine Search', choices=[('All', 'All'), ('Prisoner', 'Prisoner'),
                                                     ('Unit', 'Unit'), ('Rank', 'Rank'),
                                                     ('Capture', 'Capture')])
-    submit = SubmitField('🔍')
+    submit = SubmitField('Search')
 
 
 # Login form on login.html

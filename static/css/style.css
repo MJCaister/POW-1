@@ -236,11 +236,34 @@ p {
 
 /** Search Page Styling **/
 .searchWrapper {
+  padding-top: 50px;
   padding-bottom: 30px;
+  vertical-align: baseline;
+}
+
+.searchWrapper input[type=text] {
+  width: 50%;
+  height: 50px;
+  font-size: 20px;
+  padding-left: 15px;
+}
+
+.searchWrapper input[type=submit] {
+  height: 54px;
+  margin-bottom: 20px;
+  font-size: 20px;
+  padding: 10px;
+  background-color: white;
+}
+
+select {
+  height: 55px;
+  font-size: 20px;
 }
 
 .alphabet {
   color: #D9B68C;
   padding-top: 30px;
+  padding-bottom: 30px;
   font-size: 20px;
 }
